@@ -5,6 +5,14 @@
       "bundler": "metro"
     },
     "name": "Gamify",
-    "slug": "Gamify"
+    "slug": "Gamify",
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Gamify to use your location."
+        }
+      ]
+    ]
   }
 }
