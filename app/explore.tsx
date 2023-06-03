@@ -1,25 +1,22 @@
 import React, { useRef, useState, useEffect } from "react";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, Callout } from "react-native-maps";
 import {
-  View,
-  Text,
+  Button,
+  Modal,
   ScrollView,
   StyleSheet,
   SafeAreaView,
-  Button,
+  Text,
+  View,
 } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import ScreenHeaderBtn from "../components/common/header/ScreenHeaderBtn";
 import mapStyle from "../assets/data/mapStyle";
 import * as Location from "expo-location";
-import { calculateDistance } from "./utilities/utils";
-
-interface LocationData {
-  latitude: number;
-  longitude: number;
-  latitudeDelta: number;
-  longitudeDelta: number;
-}
+import { calculateDistance, isCloseEnough } from "./utilities/utils";
+import { LocationData } from "../constants/interfaces";
+import AppModal from "../components/common/AppModal";
+import QuestMarker from "../components/common/QuestMarker";
 
 const Explore: React.FC = () => {
   const router = useRouter();
@@ -39,6 +36,7 @@ const Explore: React.FC = () => {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [text, setText] = useState("Waiting...");
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -69,7 +67,14 @@ const Explore: React.FC = () => {
 
   const goToMarker = () => {
     //Animate the user to new region. Complete this animation in 3 seconds
-    setText(`Marker is ${calculateDistance(region, markerRegion)} meters away`);
+    setText(
+      `${
+        isCloseEnough(region, markerRegion)
+          ? "Reward Aquired"
+          : "Please get closer to aquire the reward"
+      }`
+    );
+    setModalVisible(true);
     mapRef.current.animateToRegion(markerRegion, 1000);
   };
 
@@ -96,6 +101,10 @@ const Explore: React.FC = () => {
           headerTitle: "",
         }}
       />
+      <AppModal
+        visible={modalVisible}
+        onVisibleChange={(newValue: boolean) => setModalVisible(newValue)}
+      />
       <View style={styles.container}>
         <MapView
           ref={mapRef}
@@ -104,10 +113,31 @@ const Explore: React.FC = () => {
           //   onRegionChangeComplete={(region) => setRegion(region)}
           customMapStyle={mapStyle}
         >
-          <Marker coordinate={region} pinColor="green" />
+          <Marker coordinate={region} pinColor="green">
+            <Callout>
+              <Text>Stinky Dinky here's the Callout Winky</Text>
+            </Callout>
+          </Marker>
           <Marker
             coordinate={markerRegion}
             image={require("../assets/img/chestMarker_128.png")}
+            onPress={(e) => {
+              goToLocation({
+                latitude: e.nativeEvent.coordinate.latitude,
+                longitude: e.nativeEvent.coordinate.longitude,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+              });
+            }}
+          />
+          <QuestMarker
+            locationData={{
+              latitude: 41.8308,
+              longitude: -71.41,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
+            }}
+            mapRef={mapRef}
           />
         </MapView>
         <Button onPress={() => goToMarker()} title="Go to Marker" />
