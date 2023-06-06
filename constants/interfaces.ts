@@ -5,4 +5,20 @@ interface LocationData {
   longitudeDelta: number;
 }
 
-export { LocationData };
+interface Quest {
+  title: string;
+  description: string;
+  location: LocationData;
+  reward: number;
+  expirationTimestamp: Date;
+}
+
+interface Profile {
+  firstname: string;
+  lastname: string;
+  quests: Array<Quest>;
+  experience: number;
+  level: number;
+}
+
+export { LocationData, Profile };

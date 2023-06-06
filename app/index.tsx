@@ -17,7 +17,7 @@ const Home: React.FC = () => {
               text="Forward"
               dimension="100%"
               handlePress={() => {
-                router.push(`/explore`);
+                router.push(`/profile`);
               }}
             />
           ),
