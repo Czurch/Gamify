@@ -17,6 +17,7 @@ import { calculateDistance, isCloseEnough } from "./utilities/utils";
 import { LocationData } from "../constants/interfaces";
 import AppModal from "../components/common/AppModal";
 import QuestMarker from "../components/common/QuestMarker";
+import NavBar from "../components/common/NavBar";
 
 const Explore: React.FC = () => {
   const router = useRouter();
@@ -143,6 +144,7 @@ const Explore: React.FC = () => {
         <Button onPress={() => goToMarker()} title="Go to Marker" />
         <Text style={styles.text}>{text}</Text>
       </View>
+      <NavBar />
     </SafeAreaView>
   );
 };

@@ -9,7 +9,7 @@ import { demoProfile } from "../assets/data/demoprofile";
 const ProfilePage: React.FC = () => {
   const router = useRouter();
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Stack.Screen
         options={{
           headerStyle: { backgroundColor: "#25459F" },
