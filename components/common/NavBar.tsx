@@ -19,7 +19,7 @@ const NavBar: React.FC<NavBarProps> = ({ text }) => {
         <NavButton onPress={() => router.push(`/profile`)}>
           <UserLogo width={48} height={48} />
         </NavButton>
-        <NavButton onPress={() => router.push(`./index.tsx`)}>
+        <NavButton onPress={() => router.push(`/`)}>
           <RouteLogo />
         </NavButton>
         <NavButton onPress={() => router.push(`/explore`)}>
