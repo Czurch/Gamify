@@ -7,11 +7,12 @@ import NavBar from "../components/common/NavBar";
 const Home: React.FC = () => {
   const router = useRouter();
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: "#F7F6FE", paddingTop: 32 }}
+    >
       <Stack.Screen
         options={{
-          headerShadowVisible: false,
-          headerTitle: "",
+          headerShown: false,
         }}
       />
       <ScrollView>

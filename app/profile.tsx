@@ -5,26 +5,17 @@ import { Stack, useRouter } from "expo-router";
 import NavBar from "../components/common/NavBar";
 import ScreenHeaderBtn from "../components/common/header/ScreenHeaderBtn";
 import { demoProfile } from "../assets/data/demoprofile";
+import QuestCard from "../components/common/QuestCard";
 
 const ProfilePage: React.FC = () => {
   const router = useRouter();
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: "#F7F6FE", paddingTop: 32 }}
+    >
       <Stack.Screen
         options={{
-          headerStyle: { backgroundColor: "#25459F" },
-          headerShadowVisible: false,
-          headerLeft: () => <ScreenHeaderBtn text="Back" dimension="60%" />,
-          headerRight: () => (
-            <ScreenHeaderBtn
-              text="Forward"
-              dimension="100%"
-              handlePress={() => {
-                router.back();
-              }}
-            />
-          ),
-          headerTitle: "",
+          headerShown: false,
         }}
       />
       <View style={styles.content}>
@@ -41,7 +32,13 @@ const ProfilePage: React.FC = () => {
         >{`${demoProfile.experience}/500`}</Text>
         <ScrollView>
           <View style={styles.questlist}>
-            <Text>Hoopla</Text>
+            <QuestCard />
+            <QuestCard />
+            <QuestCard />
+            <QuestCard />
+            <QuestCard />
+            <QuestCard />
+            <QuestCard />
           </View>
           {/* Design quest card components to put here.  */}
         </ScrollView>
@@ -62,6 +59,5 @@ const styles = StyleSheet.create({
   questlist: {
     display: "flex",
     flexDirection: "column",
-    margin: 16,
   },
 });

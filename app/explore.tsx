@@ -85,21 +85,12 @@ const Explore: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: "#F7F6FE", paddingTop: 32 }}
+    >
       <Stack.Screen
         options={{
-          headerStyle: { backgroundColor: "#25459F" },
-          headerShadowVisible: false,
-          headerLeft: () => (
-            <ScreenHeaderBtn
-              text="Back"
-              dimension="60%"
-              handlePress={() => {
-                router.back();
-              }}
-            />
-          ),
-          headerTitle: "",
+          headerShown: false,
         }}
       />
       <AppModal
