@@ -41,9 +41,12 @@ function calculateDistance(point1: LocationData, point2: LocationData): number {
   return distance;
 }
 
-function isCloseEnough(point1: LocationData, point2: LocationData): boolean {
+function isUserCloseEnough(
+  point1: LocationData,
+  point2: LocationData
+): boolean {
   if (calculateDistance(point1, point2) < 150) return true;
   return false;
 }
 
-export { calculateDistance, isCloseEnough };
+export { calculateDistance, isUserCloseEnough };

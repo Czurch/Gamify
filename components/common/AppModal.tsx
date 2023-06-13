@@ -41,11 +41,14 @@ export default AppModal;
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
+    backgroundColor: "rgba(255,255,255,0.2)",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 22,
   },
   modalView: {
+    width: 320,
+    height: 256,
     margin: 20,
     backgroundColor: "white",
     borderRadius: 20,

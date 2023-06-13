@@ -1,3 +1,8 @@
+interface Coordinate {
+  latitude: number;
+  longitude: number;
+}
+
 interface LocationData {
   latitude: number;
   longitude: number;
@@ -8,9 +13,9 @@ interface LocationData {
 interface Quest {
   title: string;
   description: string;
-  location: LocationData;
+  coordinate: Coordinate;
   reward: number;
-  expirationTimestamp: Date;
+  expirationTimestamp?: Date;
 }
 
 interface Profile {
@@ -21,4 +26,4 @@ interface Profile {
   level: number;
 }
 
-export { LocationData, Profile };
+export { LocationData, Profile, Quest };

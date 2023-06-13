@@ -13,11 +13,12 @@ import { Stack, useRouter } from "expo-router";
 import ScreenHeaderBtn from "../components/common/header/ScreenHeaderBtn";
 import mapStyle from "../assets/data/mapStyle";
 import * as Location from "expo-location";
-import { calculateDistance, isCloseEnough } from "./utilities/utils";
+import { calculateDistance, isUserCloseEnough } from "./utilities/utils";
 import { LocationData } from "../constants/interfaces";
 import AppModal from "../components/common/AppModal";
 import QuestMarker from "../components/common/QuestMarker";
 import NavBar from "../components/common/NavBar";
+import demoQuests from "../assets/data/demoQuests";
 
 const Explore: React.FC = () => {
   const router = useRouter();
@@ -70,7 +71,7 @@ const Explore: React.FC = () => {
     //Animate the user to new region. Complete this animation in 3 seconds
     setText(
       `${
-        isCloseEnough(region, markerRegion)
+        isUserCloseEnough(region, markerRegion)
           ? "Reward Aquired"
           : "Please get closer to aquire the reward"
       }`
@@ -122,15 +123,9 @@ const Explore: React.FC = () => {
               });
             }}
           />
-          <QuestMarker
-            locationData={{
-              latitude: 41.8308,
-              longitude: -71.41,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            }}
-            mapRef={mapRef}
-          />
+          {demoQuests.map((quest, ix) => {
+            return <QuestMarker key={ix} quest={quest} mapRef={mapRef} />;
+          })}
         </MapView>
         <Button onPress={() => goToMarker()} title="Go to Marker" />
         <Text style={styles.text}>{text}</Text>
@@ -153,6 +148,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     backgroundColor: "lightblue",
+    marginBottom: 96,
   },
 });
 

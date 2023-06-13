@@ -1,34 +1,44 @@
-import React, { Children } from "react";
+import React, { Children, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Shadow } from "react-native-shadow-2";
 import { LinearGradient } from "expo-linear-gradient";
+import { Quest } from "../../constants/interfaces";
 
 interface QuestCardProps {
-  text?: string;
-  children?: string | JSX.Element | JSX.Element[] | (() => JSX.Element);
+  quest?: Quest;
+  title: string;
+  experience: number;
+  description: string;
   onPress?: () => void;
 }
 
-const QuestCard: React.FC<QuestCardProps> = ({ text, children, onPress }) => {
+const QuestCard: React.FC<QuestCardProps> = ({
+  quest,
+  title,
+  experience,
+  description,
+  onPress,
+}) => {
+  const [backgroundColor, setBackground] = useState("rgba(231,228,251,1.0)");
+  const highlightCard = ({ pressed }) => {
+    setBackground(pressed ? "rgba(251,231,228,1.0)" : "rgba(231,228,251,1.0)");
+  };
+
   return (
     <View style={styles.container}>
       <Shadow distance={3}>
         <Pressable style={styles.card}>
           <LinearGradient
-            colors={["rgba(231,228,251,1.0)", "transparent"]}
+            colors={[backgroundColor, "transparent"]}
             style={styles.background}
           />
           <View style={styles.content}>
             <View style={styles.header}>
-              <Text style={styles.title}>Quest Title</Text>
-              <Text style={styles.xp}>50xp</Text>
+              <Text style={styles.title}>{title}</Text>
+              <Text style={styles.xp}>{experience}xp</Text>
             </View>
             <View style={styles.body}>
-              <Text style={styles.description}>
-                Quest Description would go in this section and it would be like
-                super cool actually. Like no joke I think this would be a great
-                spot for some sort of text.
-              </Text>
+              <Text>{description}</Text>
             </View>
           </View>
         </Pressable>
@@ -46,6 +56,7 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     paddingLeft: 16,
     marginBottom: 16,
+    marginTop: 16,
   },
   card: {
     width: "100%",
@@ -66,7 +77,8 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     justifyContent: "flex-start",
-    alignItems: "center",
+    flexDirection: "column",
+    alignItems: "flex-start",
   },
   header: {
     width: "100%",
@@ -78,6 +90,8 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "column",
     justifyContent: "flex-start",
+    alignContent: "flex-start",
+    alignItems: "flex-start",
   },
   title: {
     fontSize: 18,

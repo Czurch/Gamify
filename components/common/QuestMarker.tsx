@@ -1,18 +1,33 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import MapView, { Marker, Callout } from "react-native-maps";
-import { LocationData } from "../../constants/interfaces";
+import { LocationData, Quest } from "../../constants/interfaces";
 
 interface QuestMarkerProps {
-  locationData: LocationData;
+  quest: Quest;
+  location?: LocationData;
   mapRef: React.RefObject<MapView>;
 }
 
-const QuestMarker: React.FC<QuestMarkerProps> = ({ locationData, mapRef }) => {
+const QuestMarker: React.FC<QuestMarkerProps> = ({
+  quest,
+  location,
+  mapRef,
+}) => {
   const goToLocation = (data: LocationData) => {
     //Animate the user to new region. Complete this animation in 3 seconds
     mapRef.current.animateToRegion(data, 500);
   };
+  let locationData;
+  if (quest)
+    locationData = {
+      latitude: quest.coordinate.latitude,
+      longitude: quest.coordinate.longitude,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
+    };
+  else locationData = location;
+
   return (
     <Marker
       coordinate={locationData}

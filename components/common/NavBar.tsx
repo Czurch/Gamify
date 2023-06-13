@@ -7,6 +7,7 @@ import UserLogo from "../../assets/img/user.svg";
 import NavButton from "./NavButton";
 import { useRouter } from "expo-router";
 import { Shadow } from "react-native-shadow-2";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface NavBarProps {
   text?: string;
@@ -16,6 +17,10 @@ const NavBar: React.FC<NavBarProps> = ({ text }) => {
   const router = useRouter();
   return (
     <View style={styles.container}>
+      <LinearGradient
+        colors={["transparent", "rgb(247,246,254)"]}
+        style={styles.background}
+      />
       <Shadow distance={3}>
         <View style={styles.navBar}>
           <NavButton onPress={() => router.replace(`/profile`)}>
@@ -37,11 +42,20 @@ export default NavBar;
 
 const styles = StyleSheet.create({
   container: {
+    position: "absolute",
+    bottom: 0,
     width: "100%",
     backgroundColor: "transparent",
     paddingRight: 16,
     paddingLeft: 16,
     marginBottom: 16,
+  },
+  background: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
   },
   navBar: {
     height: 68,
