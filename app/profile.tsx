@@ -1,12 +1,19 @@
 import React from "react";
-import { View, Text, ScrollView, SafeAreaView, StyleSheet } from "react-native";
 import { Bar } from "react-native-progress";
+import {
+  Image,
+  ScrollView,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { Stack, useRouter } from "expo-router";
-import NavBar from "../components/common/NavBar";
-import ScreenHeaderBtn from "../components/common/header/ScreenHeaderBtn";
 import { demoProfile } from "../assets/data/demoprofile";
-import QuestCard from "../components/common/QuestCard";
 import demoQuests from "../assets/data/demoQuests";
+import DividerLine from "../components/common/DividerLine";
+import NavBar from "../components/common/NavBar";
+import QuestCard from "../components/common/QuestCard";
 
 const ProfilePage: React.FC = () => {
   const router = useRouter();
@@ -21,6 +28,11 @@ const ProfilePage: React.FC = () => {
       />
       <View style={styles.content}>
         <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+          <Image
+            source={require("../assets/img/chestMarker_128.png")}
+            style={{ width: 96, height: 96, borderRadius: 12 }}
+          />
+
           <Text style={styles.welcome}>Welcome, </Text>
           <Text style={styles.name}>{`${demoProfile.firstname}.`}</Text>
         </View>
@@ -35,19 +47,16 @@ const ProfilePage: React.FC = () => {
         />
         <Text style={styles.experience}>{`${demoProfile.experience}/500`}</Text>
         <ScrollView>
-          <View style={styles.questlist}>
-            {demoQuests.map((quest, ix) => {
-              return (
-                <QuestCard
-                  key={ix}
-                  title={quest.title}
-                  experience={quest.reward}
-                  description={quest.description}
-                />
-              );
-            })}
+          <Text style={styles.header}>Pinned Achievements</Text>
+          <View style={{ padding: 16, alignItems: "center" }}>
+            <Text>It looks like you don't have any achievements</Text>
           </View>
-          {/* Design quest card components to put here.  */}
+          <DividerLine />
+          <Text style={styles.header}>Photos</Text>
+          <View style={{ padding: 16, alignItems: "center" }}>
+            <Text>It looks like you don't have any photos</Text>
+          </View>
+          <DividerLine />
         </ScrollView>
       </View>
       <NavBar />
@@ -85,5 +94,9 @@ const styles = StyleSheet.create({
   experience: {
     alignSelf: "flex-end",
     fontWeight: "500",
+  },
+  header: {
+    fontSize: 20,
+    padding: 16,
   },
 });
