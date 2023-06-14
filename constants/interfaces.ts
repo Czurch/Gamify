@@ -3,11 +3,28 @@ interface Coordinate {
   longitude: number;
 }
 
+interface Goal {
+  task: string;
+  value: number;
+  time: string;
+  interval: string;
+}
+
 interface LocationData {
   latitude: number;
   longitude: number;
   latitudeDelta: number;
   longitudeDelta: number;
+}
+
+interface Profile {
+  firstname: string;
+  lastname: string;
+  goal: Array<Goal>;
+  quests: Array<Quest>;
+  experience: number;
+  level: number;
+  skillProgress: Map<string, boolean>; // false = accepted / true = completed
 }
 
 interface Quest {
@@ -18,12 +35,13 @@ interface Quest {
   expirationTimestamp?: Date;
 }
 
-interface Profile {
-  firstname: string;
-  lastname: string;
-  quests: Array<Quest>;
-  experience: number;
-  level: number;
+interface Skill {
+  id: string;
+  name: string;
+  description: string;
+  children: Skill[];
+  parent?: string;
+  prereq?: Array<string>;
 }
 
-export { LocationData, Profile, Quest };
+export { Coordinate, Goal, LocationData, Profile, Quest, Skill };
