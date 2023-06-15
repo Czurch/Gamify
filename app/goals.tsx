@@ -8,11 +8,25 @@ import TextCard from "../components/common/TextCard";
 import AddButton from "../components/common/AddButton";
 import AppModal from "../components/common/AppModal";
 import NumberWheelPicker from "../components/common/NumberWheelPicker";
+import WheelPickerExpo from "react-native-wheel-picker-expo";
+import InputField from "../components/common/InputField";
 
 const Goals: React.FC = () => {
-  const CITIES = "Jakarta,Bandung,Sumbawa,Taliwang,Lombok,Bima".split(",");
+  const timeInterval = [
+    { label: "minutes", value: "minutes" },
+    { label: "hours", value: "hours" },
+    { label: "times", value: "times" },
+  ];
+  const timePeriod = [
+    { label: "day", value: "day" },
+    { label: "week", value: "week" },
+    { label: "month", value: "month" },
+  ];
   const [modalVisible, setModalVisible] = useState(false);
+  const [activity, setActivity] = useState(null);
   const [value, setValue] = useState(0);
+  const [interval, setInterval] = useState("minutes");
+  const [period, setPeriod] = useState("day");
   const openModal = () => {
     setModalVisible(true);
   };
@@ -30,11 +44,25 @@ const Goals: React.FC = () => {
         visible={modalVisible}
         onVisibleChange={(newValue: boolean) => setModalVisible(newValue)}
       >
-        <Text>Here's the content of the modal</Text>
-        <NumberWheelPicker
-          minValue={1}
-          maxValue={10}
-          onSetValue={({ item }) => setValue(item.label)}
+        <Text>I would like to</Text>
+        <InputField value="Bike" />
+        <Text>for</Text>
+        <View style={styles.row}>
+          <NumberWheelPicker
+            minValue={1}
+            maxValue={10}
+            onSetValue={({ item }) => setValue(item.label)}
+          />
+          <WheelPickerExpo
+            onChange={({ item }) => setInterval(item.label)}
+            items={timeInterval}
+            backgroundColor="#F7F6FE"
+          />
+        </View>
+        <Text>per</Text>
+        <WheelPickerExpo
+          onChange={({ item }) => setPeriod(item.label)}
+          items={timePeriod}
         />
       </AppModal>
       <View style={styles.content}>
@@ -84,5 +112,9 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 20,
     padding: 16,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });
