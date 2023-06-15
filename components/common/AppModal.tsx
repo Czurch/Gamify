@@ -1,39 +1,42 @@
 import React, { useState } from "react";
-import { Button, Modal, StyleSheet, Text, View } from "react-native";
+import { Button, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import CloseIcon from "../../assets/img/close.svg";
 
 interface AppModalProps {
   text?: string;
   visible: boolean;
   onVisibleChange: (newValue: boolean) => void;
+  children?: string | JSX.Element | JSX.Element[] | (() => JSX.Element);
 }
 
 const AppModal: React.FC<AppModalProps> = ({
   text,
   visible,
   onVisibleChange,
+  children,
 }) => {
   return (
-    <View style={styles.centeredView}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={visible}
-        onRequestClose={() => {
-          onVisibleChange(!visible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>{text}</Text>
-            <Button
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => onVisibleChange(!visible)}
-              title="Hide Modal"
-            />
-          </View>
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={() => {
+        onVisibleChange(!visible);
+      }}
+    >
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <Text style={styles.modalText}>{text}</Text>
+          <Pressable
+            style={[styles.button, styles.buttonClose]}
+            onPress={() => onVisibleChange(!visible)}
+          >
+            <CloseIcon />
+          </Pressable>
+          {children}
         </View>
-      </Modal>
-    </View>
+      </View>
+    </Modal>
   );
 };
 export default AppModal;
@@ -41,15 +44,13 @@ export default AppModal;
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    backgroundColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(255,255,255,0.7)",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22,
   },
   modalView: {
-    width: 320,
+    width: "90%",
     height: 256,
-    margin: 20,
     backgroundColor: "white",
     borderRadius: 20,
     padding: 35,
@@ -64,15 +65,17 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   button: {
-    borderRadius: 20,
+    borderRadius: 12,
     padding: 10,
-    elevation: 2,
   },
   buttonOpen: {
     backgroundColor: "#F194FF",
   },
   buttonClose: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "#EEEEEE",
+    position: "absolute",
+    top: 16,
+    right: 16,
   },
   textStyle: {
     color: "white",
