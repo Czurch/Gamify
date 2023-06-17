@@ -5,12 +5,14 @@ import { ItemType } from "react-native-wheel-picker-expo/lib/typescript/types";
 interface NumberWheelPickerProps {
   minValue: number;
   maxValue: number;
+  height?: number;
   onSetValue: (item: any) => void;
 }
 
 const NumberWheelPicker: React.FC<NumberWheelPickerProps> = ({
   minValue,
   maxValue,
+  height,
   onSetValue,
 }) => {
   const generateItemsInRange = () => {
@@ -25,6 +27,7 @@ const NumberWheelPicker: React.FC<NumberWheelPickerProps> = ({
       initialSelectedIndex={3}
       items={generateItemsInRange()}
       onChange={onSetValue}
+      height={height ? height : 150}
     />
   );
 };

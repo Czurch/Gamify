@@ -1,14 +1,38 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
+import NumberWheelPicker from "./NumberWheelPicker";
 
 interface InputFieldProps {
   value: string;
 }
 
 const InputField: React.FC<InputFieldProps> = ({ value }) => {
+  const [isFocused, setIsFocused] = useState(false);
+  const viewRef = useRef<View>(null);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>{value}</Text>
+    <View>
+      {isFocused && (
+        <Pressable
+          style={[styles.outPress, { height: Dimensions.get("window").height }]}
+          onPress={() => setIsFocused(false)}
+        />
+      )}
+      <Pressable onPressIn={() => setIsFocused(true)}>
+        <View style={styles.container} ref={viewRef}>
+          <Text style={styles.text}>{value}</Text>
+          {isFocused && (
+            <View style={styles.wheelContainer}>
+              <NumberWheelPicker
+                minValue={1}
+                maxValue={10}
+                onSetValue={() => {}}
+                height={150}
+              />
+            </View>
+          )}
+        </View>
+      </Pressable>
     </View>
   );
 };
@@ -25,5 +49,15 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
+  },
+  wheelContainer: {
+    transform: [{ translateY: -35.5 }],
+  },
+  outPress: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    backgroundColor: "#DDDDDD",
   },
 });
