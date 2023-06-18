@@ -8,16 +8,20 @@ import {
   View,
 } from "react-native";
 import NumberWheelPicker from "./NumberWheelPicker";
+import { ItemType } from "react-native-wheel-picker-expo/lib/typescript/types";
+import WheelPickerExpo from "react-native-wheel-picker-expo";
 
-interface InputFieldProps {
+interface EnumFieldProps {
   value: string;
   setValue: (value: any) => void;
+  items: ItemType[];
   dismissFocus: boolean;
 }
 
-const InputField: React.FC<InputFieldProps> = ({
+const EnumField: React.FC<EnumFieldProps> = ({
   value,
   setValue,
+  items,
   dismissFocus,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -32,12 +36,11 @@ const InputField: React.FC<InputFieldProps> = ({
           <Text style={styles.text}>{value}</Text>
           {isFocused && (
             <View style={styles.wheelContainer}>
-              <NumberWheelPicker
-                minValue={1}
-                maxValue={10}
-                onSetValue={(v) => {
+              <WheelPickerExpo
+                onChange={(v) => {
                   setValue(v);
                 }}
+                items={items}
                 height={150}
               />
             </View>
@@ -48,7 +51,7 @@ const InputField: React.FC<InputFieldProps> = ({
   );
 };
 
-export default InputField;
+export default EnumField;
 
 const styles = StyleSheet.create({
   container: {

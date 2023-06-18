@@ -10,8 +10,15 @@ import AppModal from "../components/common/AppModal";
 import NumberWheelPicker from "../components/common/NumberWheelPicker";
 import WheelPickerExpo from "react-native-wheel-picker-expo";
 import InputField from "../components/common/InputField";
+import { Pressable } from "react-native";
+import EnumField from "../components/common/EnumField";
 
 const Goals: React.FC = () => {
+  const activities = [
+    { label: "Bike", value: "bike" },
+    { label: "Skateboard", value: "skateboard" },
+    { label: "Run", value: "run" },
+  ];
   const timeInterval = [
     { label: "minutes", value: "minutes" },
     { label: "hours", value: "hours" },
@@ -23,10 +30,11 @@ const Goals: React.FC = () => {
     { label: "month", value: "month" },
   ];
   const [modalVisible, setModalVisible] = useState(false);
-  const [activity, setActivity] = useState(null);
-  const [value, setValue] = useState(0);
+  const [activity, setActivity] = useState("Bike");
+  const [value, setValue] = useState("0");
   const [interval, setInterval] = useState("minutes");
   const [period, setPeriod] = useState("day");
+  const [dismiss, setDismiss] = useState(true);
   const openModal = () => {
     setModalVisible(true);
   };
@@ -43,26 +51,35 @@ const Goals: React.FC = () => {
       <AppModal
         visible={modalVisible}
         onVisibleChange={(newValue: boolean) => setModalVisible(newValue)}
+        dismissChildren={() => setDismiss(!dismiss)}
       >
         <Text>I would like to</Text>
-        <InputField value="Bike" />
+        <EnumField
+          value={activity}
+          setValue={({ item }) => setActivity(item.label)}
+          items={activities}
+          dismissFocus={dismiss}
+        />
         <Text>for</Text>
         <View style={styles.row}>
-          <NumberWheelPicker
-            minValue={1}
-            maxValue={10}
-            onSetValue={({ item }) => setValue(item.label)}
+          <InputField
+            value={value}
+            setValue={({ item }) => setValue(item.label)}
+            dismissFocus={dismiss}
           />
-          <WheelPickerExpo
-            onChange={({ item }) => setInterval(item.label)}
+          <EnumField
+            value={interval}
+            setValue={({ item }) => setInterval(item.label)}
             items={timeInterval}
-            backgroundColor="#F7F6FE"
+            dismissFocus={dismiss}
           />
         </View>
         <Text>per</Text>
-        <WheelPickerExpo
-          onChange={({ item }) => setPeriod(item.label)}
+        <EnumField
+          value={period}
+          setValue={({ item }) => setPeriod(item.label)}
           items={timePeriod}
+          dismissFocus={dismiss}
         />
       </AppModal>
       <View style={styles.content}>

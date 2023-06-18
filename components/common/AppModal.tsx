@@ -7,6 +7,7 @@ interface AppModalProps {
   visible: boolean;
   onVisibleChange: (newValue: boolean) => void;
   children?: string | JSX.Element | JSX.Element[] | (() => JSX.Element);
+  dismissChildren: () => void;
 }
 
 const AppModal: React.FC<AppModalProps> = ({
@@ -14,7 +15,11 @@ const AppModal: React.FC<AppModalProps> = ({
   visible,
   onVisibleChange,
   children,
+  dismissChildren,
 }) => {
+  const dismissInputFocus = () => {
+    dismissChildren();
+  };
   return (
     <Modal
       animationType="slide"
@@ -25,16 +30,24 @@ const AppModal: React.FC<AppModalProps> = ({
       }}
     >
       <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>{text}</Text>
+        <Pressable
+          style={{
+            position: "absolute",
+            height: "100%",
+            width: "100%",
+            backgroundColor: "transparent",
+          }}
+          onPress={() => dismissInputFocus()}
+        />
+        <Pressable style={styles.modalView} onPress={() => dismissInputFocus()}>
+          {children}
           <Pressable
             style={[styles.button, styles.buttonClose]}
             onPress={() => onVisibleChange(!visible)}
           >
             <CloseIcon />
           </Pressable>
-          {children}
-        </View>
+        </Pressable>
       </View>
     </Modal>
   );
@@ -50,7 +63,8 @@ const styles = StyleSheet.create({
   },
   modalView: {
     width: "90%",
-    height: 256,
+    minHeight: 256,
+    maxHeight: "80%",
     backgroundColor: "rgba(231,228,251,1.0)",
     borderRadius: 20,
     padding: 35,
