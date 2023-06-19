@@ -6,8 +6,8 @@ import { demoProfile } from "../assets/data/demoprofile";
 import demoQuests from "../assets/data/demoQuests";
 import DividerLine from "../components/common/DividerLine";
 import NavBar from "../components/common/NavBar";
-import QuestCard from "../components/common/QuestCard";
-import TextCard from "../components/common/TextCard";
+import QuestCard from "../components/cards/QuestCard";
+import TextCard from "../components/cards/TextCard";
 
 const Home: React.FC = () => {
   return (

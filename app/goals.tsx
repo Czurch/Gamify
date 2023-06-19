@@ -4,7 +4,7 @@ import { Stack } from "expo-router";
 import { demoProfile } from "../assets/data/demoprofile";
 import DividerLine from "../components/common/DividerLine";
 import NavBar from "../components/common/NavBar";
-import TextCard from "../components/common/TextCard";
+import TextCard from "../components/cards/TextCard";
 import AddButton from "../components/common/AddButton";
 import AppModal from "../components/common/AppModal";
 import NumberWheelPicker from "../components/common/NumberWheelPicker";
@@ -12,6 +12,8 @@ import WheelPickerExpo from "react-native-wheel-picker-expo";
 import InputField from "../components/common/InputField";
 import { Pressable } from "react-native";
 import EnumField from "../components/common/EnumField";
+import SubmitButton from "../components/common/SubmitButton";
+import { Goal } from "../constants/interfaces";
 
 const Goals: React.FC = () => {
   const activities = [
@@ -39,6 +41,15 @@ const Goals: React.FC = () => {
     setModalVisible(true);
   };
 
+  const createNewGoal = () => {
+    const goal: Goal = {
+      task: activity,
+      value: Number(value),
+      time: interval,
+      interval: period,
+    };
+  };
+
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "#F7F6FE", paddingTop: 32 }}
@@ -53,14 +64,14 @@ const Goals: React.FC = () => {
         onVisibleChange={(newValue: boolean) => setModalVisible(newValue)}
         dismissChildren={() => setDismiss(!dismiss)}
       >
-        <Text>I would like to</Text>
+        <Text style={{ padding: 16 }}>I would like to</Text>
         <EnumField
           value={activity}
           setValue={({ item }) => setActivity(item.label)}
           items={activities}
           dismissFocus={dismiss}
         />
-        <Text>for</Text>
+        <Text style={{ padding: 16 }}>for</Text>
         <View style={styles.row}>
           <InputField
             value={value}
@@ -74,13 +85,14 @@ const Goals: React.FC = () => {
             dismissFocus={dismiss}
           />
         </View>
-        <Text>per</Text>
+        <Text style={{ padding: 16 }}>per</Text>
         <EnumField
           value={period}
           setValue={({ item }) => setPeriod(item.label)}
           items={timePeriod}
           dismissFocus={dismiss}
         />
+        <SubmitButton text="Create Goal" onPress={() => createNewGoal()} />
       </AppModal>
       <View style={styles.content}>
         <Text style={styles.header}>My Goals</Text>

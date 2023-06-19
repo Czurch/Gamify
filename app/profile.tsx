@@ -13,7 +13,7 @@ import { demoProfile } from "../assets/data/demoprofile";
 import demoQuests from "../assets/data/demoQuests";
 import DividerLine from "../components/common/DividerLine";
 import NavBar from "../components/common/NavBar";
-import QuestCard from "../components/common/QuestCard";
+import QuestCard from "../components/cards/QuestCard";
 
 const ProfilePage: React.FC = () => {
   const router = useRouter();

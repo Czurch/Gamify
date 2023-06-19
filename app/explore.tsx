@@ -16,7 +16,7 @@ import * as Location from "expo-location";
 import { calculateDistance, isUserCloseEnough } from "./utilities/utils";
 import { LocationData } from "../constants/interfaces";
 import AppModal from "../components/common/AppModal";
-import QuestMarker from "../components/common/QuestMarker";
+import QuestMarker from "../components/markers/QuestMarker";
 import NavBar from "../components/common/NavBar";
 import demoQuests from "../assets/data/demoQuests";
 
@@ -97,6 +97,7 @@ const Explore: React.FC = () => {
       <AppModal
         visible={modalVisible}
         onVisibleChange={(newValue: boolean) => setModalVisible(newValue)}
+        dismissChildren={() => {}}
       />
       <View style={styles.container}>
         <MapView
