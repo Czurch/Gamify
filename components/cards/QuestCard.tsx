@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Shadow } from "react-native-shadow-2";
 import { LinearGradient } from "expo-linear-gradient";
 import { Quest } from "../../constants/interfaces";
+import TextButton from "../common/TextButton";
 
 interface QuestCardProps {
   quest?: Quest;
@@ -41,6 +42,10 @@ const QuestCard: React.FC<QuestCardProps> = ({
               <Text>{description}</Text>
             </View>
           </View>
+          <TextButton
+            text="Accept Quest"
+            onPress={() => console.log("AHHHH OH GOD, IT HURTS! GOOD GOD!")}
+          />
         </Pressable>
       </Shadow>
     </View>

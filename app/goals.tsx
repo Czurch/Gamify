@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { userSlice } from "../store/reducers/userReducer";
 import { ScrollView, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { Stack } from "expo-router";
 import { demoProfile } from "../assets/data/demoprofile";
@@ -7,47 +9,53 @@ import NavBar from "../components/common/NavBar";
 import TextCard from "../components/cards/TextCard";
 import AddButton from "../components/common/AddButton";
 import AppModal from "../components/common/AppModal";
-import NumberWheelPicker from "../components/common/NumberWheelPicker";
-import WheelPickerExpo from "react-native-wheel-picker-expo";
 import InputField from "../components/common/InputField";
 import { Pressable } from "react-native";
 import EnumField from "../components/common/EnumField";
 import SubmitButton from "../components/common/SubmitButton";
-import { Goal } from "../constants/interfaces";
+import { Goal, Profile } from "../constants/interfaces";
 
 const Goals: React.FC = () => {
+  const goals = useSelector((state: { user: Profile }) => state.user.goals);
+  const dispatch = useDispatch();
+  const { addGoal } = userSlice.actions;
+
   const activities = [
     { label: "Bike", value: "bike" },
     { label: "Skateboard", value: "skateboard" },
     { label: "Run", value: "run" },
   ];
-  const timeInterval = [
+  const timeValue = [
     { label: "minutes", value: "minutes" },
     { label: "hours", value: "hours" },
     { label: "times", value: "times" },
   ];
-  const timePeriod = [
+  const timeInterval = [
     { label: "day", value: "day" },
     { label: "week", value: "week" },
     { label: "month", value: "month" },
   ];
+
   const [modalVisible, setModalVisible] = useState(false);
-  const [activity, setActivity] = useState("Bike");
+  const [task, setTask] = useState("Bike");
   const [value, setValue] = useState("0");
-  const [interval, setInterval] = useState("minutes");
-  const [period, setPeriod] = useState("day");
+  const [time, setTime] = useState("minutes");
+  const [interval, setInterval] = useState("day");
   const [dismiss, setDismiss] = useState(true);
   const openModal = () => {
     setModalVisible(true);
   };
 
   const createNewGoal = () => {
+    setDismiss(true);
+    setModalVisible(false);
     const goal: Goal = {
-      task: activity,
+      task: task,
       value: Number(value),
-      time: interval,
-      interval: period,
+      time: time,
+      interval: interval,
     };
+    dispatch(addGoal(goal));
   };
 
   return (
@@ -66,8 +74,8 @@ const Goals: React.FC = () => {
       >
         <Text style={{ padding: 16 }}>I would like to</Text>
         <EnumField
-          value={activity}
-          setValue={({ item }) => setActivity(item.label)}
+          value={task}
+          setValue={({ item }) => setTask(item.label)}
           items={activities}
           dismissFocus={dismiss}
         />
@@ -79,17 +87,17 @@ const Goals: React.FC = () => {
             dismissFocus={dismiss}
           />
           <EnumField
-            value={interval}
-            setValue={({ item }) => setInterval(item.label)}
-            items={timeInterval}
+            value={time}
+            setValue={({ item }) => setTime(item.label)}
+            items={timeValue}
             dismissFocus={dismiss}
           />
         </View>
         <Text style={{ padding: 16 }}>per</Text>
         <EnumField
-          value={period}
-          setValue={({ item }) => setPeriod(item.label)}
-          items={timePeriod}
+          value={interval}
+          setValue={({ item }) => setInterval(item.label)}
+          items={timeInterval}
           dismissFocus={dismiss}
         />
         <SubmitButton text="Create Goal" onPress={() => createNewGoal()} />
@@ -97,7 +105,18 @@ const Goals: React.FC = () => {
       <View style={styles.content}>
         <Text style={styles.header}>My Goals</Text>
         <ScrollView>
-          <TextCard innerText="You dont have any goals set." />
+          {goals.length === 0 ? (
+            <TextCard innerText="You dont have any goals set." />
+          ) : (
+            goals.map((goal, ix) => {
+              return (
+                <TextCard
+                  innerText={`${goal.task} ${goal.value} ${goal.time} every ${goal.interval}`}
+                  key={ix}
+                />
+              );
+            })
+          )}
         </ScrollView>
         <DividerLine />
         <AddButton onPress={openModal} />
