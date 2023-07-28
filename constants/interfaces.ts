@@ -20,11 +20,11 @@ interface LocationData {
 interface Profile {
   firstname: string;
   lastname: string;
-  goal: Array<Goal>;
+  goals: Array<Goal>;
   quests: Array<Quest>;
   experience: number;
   level: number;
-  skillProgress: Map<string, boolean>; // false = accepted / true = completed
+  //skillProgress: Map<string, boolean>; // false = accepted / true = completed
 }
 
 interface Quest {
@@ -33,6 +33,10 @@ interface Quest {
   coordinate: Coordinate;
   reward: number;
   expirationTimestamp?: Date;
+}
+
+interface QuestList {
+  quests: Quest[];
 }
 
 interface Skill {
@@ -44,4 +48,4 @@ interface Skill {
   prereq?: Array<string>;
 }
 
-export { Coordinate, Goal, LocationData, Profile, Quest, Skill };
+export { Coordinate, Goal, LocationData, Profile, Quest, QuestList, Skill };

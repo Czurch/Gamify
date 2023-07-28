@@ -1,15 +1,41 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Profile, QuestList } from "../constants/interfaces";
 import { Bar } from "react-native-progress";
-import { ScrollView, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import { Stack, useRouter } from "expo-router";
-import { demoProfile } from "../assets/data/demoprofile";
+import {
+  ScrollView,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+} from "react-native";
+import { Stack } from "expo-router";
 import demoQuests from "../assets/data/demoQuests";
 import DividerLine from "../components/common/DividerLine";
 import NavBar from "../components/common/NavBar";
 import QuestCard from "../components/cards/QuestCard";
 import TextCard from "../components/cards/TextCard";
+import nearbyQuestSlice from "../store/reducers/nearbyQuestReducer";
+import { Quest } from "../constants/interfaces";
 
 const Home: React.FC = () => {
+  const userProfile: Profile = useSelector(
+    (state: { user: Profile }) => state.user
+  );
+  const nearbyQuests: Quest[] = useSelector(
+    (state: { nearbyQuests: QuestList }) => state.nearbyQuests.quests
+  );
+  const dispatch = useDispatch();
+  const { replaceList } = nearbyQuestSlice.actions;
+  const fetchNearbyQuests = () => {
+    dispatch(replaceList(demoQuests));
+  };
+
+  useEffect(() => {
+    fetchNearbyQuests();
+  }, []);
+
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "#F7F6FE", paddingTop: 32 }}
@@ -22,18 +48,18 @@ const Home: React.FC = () => {
       <View style={styles.content}>
         <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
           <Text style={styles.welcome}>Welcome, </Text>
-          <Text style={styles.name}>{`${demoProfile.firstname}.`}</Text>
+          <Text style={styles.name}>{`${userProfile.firstname}.`}</Text>
         </View>
 
         <Text style={styles.tagline}>Your journey Awaits.</Text>
-        <Text style={styles.level}>{`Level ${demoProfile.level} `}</Text>
+        <Text style={styles.level}>{`Level ${userProfile.level} `}</Text>
         <Bar
-          progress={demoProfile.experience / 500}
+          progress={userProfile.experience / 500}
           width={null}
           borderRadius={0}
           color="rgba(250, 220, 0, 1)"
         />
-        <Text style={styles.experience}>{`${demoProfile.experience}/500`}</Text>
+        <Text style={styles.experience}>{`${userProfile.experience}/500`}</Text>
         <ScrollView>
           <Text style={styles.header}>Daily Quest</Text>
           <QuestCard
@@ -47,7 +73,7 @@ const Home: React.FC = () => {
           <DividerLine />
           <Text style={styles.header}>Available Quests</Text>
           <View style={styles.questlist}>
-            {demoQuests.map((quest, ix) => {
+            {nearbyQuests.map((quest, ix) => {
               return (
                 <QuestCard
                   key={ix}

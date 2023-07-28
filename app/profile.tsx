@@ -1,4 +1,7 @@
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { userSlice } from "../store/reducers/userReducer";
+import { Profile } from "../constants/interfaces";
 import { Bar } from "react-native-progress";
 import {
   Image,
@@ -17,6 +20,12 @@ import QuestCard from "../components/cards/QuestCard";
 
 const ProfilePage: React.FC = () => {
   const router = useRouter();
+  const userProfile: Profile = useSelector(
+    (state: { user: Profile }) => state.user
+  );
+  const { firstname, lastname, goals, quests, experience, level } = userProfile;
+  const dispatch = useDispatch();
+  const { addGoal } = userSlice.actions;
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "#F7F6FE", paddingTop: 32 }}
@@ -33,19 +42,19 @@ const ProfilePage: React.FC = () => {
             style={{ width: 96, height: 96, borderRadius: 12 }}
           />
 
-          <Text style={styles.welcome}>Welcome, </Text>
-          <Text style={styles.name}>{`${demoProfile.firstname}.`}</Text>
+          <Text style={styles.welcome}>{firstname} </Text>
+          <Text style={styles.name}>{lastname}</Text>
         </View>
 
-        <Text style={styles.tagline}>Your journey Awaits.</Text>
-        <Text style={styles.level}>{`Level ${demoProfile.level} `}</Text>
+        <Text style={styles.tagline}>Novice Biker</Text>
+        <Text style={styles.level}>{`Level ${level} `}</Text>
         <Bar
-          progress={demoProfile.experience / 500}
+          progress={experience / 500}
           width={null}
           borderRadius={0}
           color="rgba(250, 220, 0, 1)"
         />
-        <Text style={styles.experience}>{`${demoProfile.experience}/500`}</Text>
+        <Text style={styles.experience}>{`${experience}/500`}</Text>
         <ScrollView>
           <Text style={styles.header}>Pinned Achievements</Text>
           <View style={{ padding: 16, alignItems: "center" }}>
