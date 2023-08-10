@@ -29,7 +29,7 @@ const NavBar: React.FC<NavBarProps> = ({ text }) => {
           <NavButton onPress={() => router.replace(`/`)}>
             <RouteLogo />
           </NavButton>
-          <NavButton onPress={() => router.replace(`/goals`)}>
+          <NavButton onPress={() => router.replace(`/explore`)}>
             <CompassLogo />
           </NavButton>
         </View>

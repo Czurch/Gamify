@@ -14,10 +14,12 @@ import { Stack } from "expo-router";
 import demoQuests from "../assets/data/demoQuests";
 import DividerLine from "../components/common/DividerLine";
 import NavBar from "../components/common/NavBar";
+import { useRouter } from "expo-router";
 import QuestCard from "../components/cards/QuestCard";
 import TextCard from "../components/cards/TextCard";
 import nearbyQuestSlice from "../store/reducers/nearbyQuestReducer";
 import { Quest } from "../constants/interfaces";
+import TextButton from "../components/common/TextButton";
 
 const Home: React.FC = () => {
   const userProfile: Profile = useSelector(
@@ -35,6 +37,8 @@ const Home: React.FC = () => {
   useEffect(() => {
     fetchNearbyQuests();
   }, []);
+
+  const router = useRouter();
 
   return (
     <SafeAreaView
@@ -67,6 +71,28 @@ const Home: React.FC = () => {
             description="Take a bike ride! Bike for 1 km today."
             experience={100}
           />
+          <DividerLine />
+          <Text style={styles.header}>Your Goals</Text>
+          <View style={{ flex: 1 }}>
+            {userProfile.goals.length === 0 ? (
+              <TextCard innerText="You dont have any goals set." />
+            ) : (
+              userProfile.goals.map((goal, ix) => {
+                return (
+                  <TextCard
+                    innerText={`${goal.task} ${goal.value} ${goal.time} every ${goal.interval}`}
+                    key={ix}
+                  />
+                );
+              })
+            )}
+            <View>
+              <TextButton
+                text="My Goals"
+                onPress={() => router.replace(`/goals`)}
+              />
+            </View>
+          </View>
           <DividerLine />
           <Text style={styles.header}>Active Quests</Text>
           <TextCard innerText="You don't have any active quests right now." />

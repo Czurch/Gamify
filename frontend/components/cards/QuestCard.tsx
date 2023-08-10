@@ -27,7 +27,7 @@ const QuestCard: React.FC<QuestCardProps> = ({
 
   return (
     <View style={styles.container}>
-      <Shadow distance={3}>
+      <Shadow distance={3} style={styles.shadow}>
         <Pressable style={styles.card}>
           <LinearGradient
             colors={[backgroundColor, "transparent"]}
@@ -68,6 +68,9 @@ const styles = StyleSheet.create({
     height: 185,
     display: "flex",
     borderRadius: 12,
+  },
+  shadow: {
+    width: "100%",
   },
   background: {
     position: "absolute",
