@@ -5,7 +5,7 @@ import { View } from "react-native";
 const DividerLine = () => {
   return (
     <View style={{ padding: 16 }}>
-      <Shadow distance={3}>
+      <Shadow distance={3} style={{ width: "100%" }}>
         <View style={{ height: 2, width: "100%", borderRadius: 0.9 }} />
       </Shadow>
     </View>

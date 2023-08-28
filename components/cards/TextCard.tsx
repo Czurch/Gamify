@@ -8,7 +8,7 @@ interface TextCardProps {
 const TextCard: React.FC<TextCardProps> = ({ innerText }) => {
   return (
     <View style={styles.container}>
-      <Shadow distance={3} style={{ width: "100%" }}>
+      <Shadow distance={3} style={styles.shadow}>
         <View style={styles.card}>
           <Text style={styles.innerText}>{innerText}</Text>
         </View>
@@ -27,6 +27,9 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     marginBottom: 16,
     marginTop: 16,
+  },
+  shadow: {
+    width: "100%",
   },
   card: {
     width: "100%",

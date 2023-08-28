@@ -14,9 +14,9 @@ const TextButton: React.FC<TextButtonProps> = ({ text, onPress }) => {
         position: "absolute",
         bottom: 0,
         right: 0,
+        left: 0,
         justifyContent: "center",
         alignItems: "center",
-        width: "100%",
       }}
     >
       <Pressable

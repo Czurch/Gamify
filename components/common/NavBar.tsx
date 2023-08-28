@@ -21,7 +21,7 @@ const NavBar: React.FC<NavBarProps> = ({ text }) => {
         colors={["transparent", "rgb(247,246,254)"]}
         style={styles.background}
       />
-      <Shadow distance={3}>
+      <Shadow distance={3} style={styles.shadow}>
         <View style={styles.navBar}>
           <NavButton onPress={() => router.replace(`/profile`)}>
             <UserLogo width={48} height={48} />
@@ -49,6 +49,9 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     paddingLeft: 16,
     marginBottom: 16,
+  },
+  shadow: {
+    width: "100%",
   },
   background: {
     position: "absolute",
