@@ -1,0 +1,96 @@
+Set Up Your PostgreSQL Database:
+[X] - Install PostgreSQL on your server or locally.
+[X] - Create a new database for your project.
+[X] - Set up the necessary tables to store data (e.g., "users" table for user profiles).
+
+Create Your GraphQL Schema:
+[] - Define your GraphQL schema using GraphQL SDL (Schema Definition Language). This defines the types, queries, and mutations your API will support.
+
+Set Up Apollo Server:
+[X] - Install the necessary dependencies (apollo-server, pg, etc.).
+[] - Create an Apollo Server instance, connecting it to your PostgreSQL database.
+[] - Use your GraphQL schema in the Apollo Server configuration.
+
+Define Resolvers:
+[] - Write resolver functions for each field in your schema.
+[] - Resolvers are responsible for fetching and manipulating data from your PostgreSQL database.
+
+Implement Authentication and Authorization:
+[] - Choose an authentication method (JWT, OAuth, etc.) and integrate it with Apollo Server.
+[] - Implement authorization logic to restrict access to certain data and operations.
+
+Test Your GraphQL API:
+[] - Use tools like Apollo Studio, GraphQL Playground, or Postman to test your API endpoints and queries.
+
+
+
+
+FOR FRONTEND WHEN READY:
+
+Example Frontend Query for User Profile:
+Let's say you want to request a user's profile using GraphQL from your React Native frontend.
+
+Install Dependencies:
+
+Install the necessary packages: @apollo/client for GraphQL client in React Native.
+Set Up Apollo Client:
+
+Create an instance of ApolloClient and set the URI to your GraphQL server.
+`
+import { ApolloClient, InMemoryCache } from '@apollo/client';
+
+const client = new ApolloClient({
+  uri: 'YOUR_GRAPHQL_SERVER_URL',
+  cache: new InMemoryCache(),
+});
+`
+Write the GraphQL Query in Your Frontend:
+Assuming you have a query named GET_USER_PROFILE in your GraphQL schema:
+
+`
+import { useQuery } from '@apollo/client';
+import { Text, View } from 'react-native';
+
+import { GET_USER_PROFILE } from './yourQueryPath';
+
+function UserProfile() {
+  const { loading, error, data } = useQuery(GET_USER_PROFILE);
+
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error: {error.message}</Text>;
+
+  const user = data.getUserProfile; // Assuming this is the field returned by the query
+
+  return (
+    <View>
+      <Text>Name: {user.name}</Text>
+      <Text>Email: {user.email}</Text>
+      {/* Other user profile details */}
+    </View>
+  );
+}
+
+export default UserProfile;
+`
+Define the GraphQL Query:
+In a separate file, define your GraphQL query using the gql template tag:
+
+`
+import { gql } from '@apollo/client';
+
+export const GET_USER_PROFILE = gql`
+  query GetUserProfile {
+    getUserProfile {
+      id
+      name
+      email
+      // Other user profile fields
+    }
+  }
+`;
+`
+Remember that the query structure should match the structure of your backend's GraphQL schema.
+
+This example gives you a basic outline of how to set up your frontend to request a user profile using
+ GraphQL. You can expand on this by adding error handling, loading indicators, and more complex 
+ queries and mutations as needed for your application.
