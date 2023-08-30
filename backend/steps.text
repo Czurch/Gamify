@@ -9,7 +9,7 @@ Create Your GraphQL Schema:
 Set Up Apollo Server:
 [X] - Install the necessary dependencies (apollo-server, pg, etc.).
 [] - Create an Apollo Server instance, connecting it to your PostgreSQL database.
-[] - Use your GraphQL schema in the Apollo Server configuration.
+[X] - Use your GraphQL schema in the Apollo Server configuration.
 
 Define Resolvers:
 [] - Write resolver functions for each field in your schema.
