@@ -24,11 +24,12 @@ const serverInit = async () => {
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
 
+  // WARNING: THIS WILL NEED TO CHANGE FOR PRODUCTION
   const pool = new Pool({
-    user: "your_db_user",
+    user: "postgres",
     host: "localhost",
-    database: "your_db_name",
-    password: "your_db_password",
+    database: "gamifyDB",
+    password: "newJ0bnow!",
     port: 5432,
   });
 

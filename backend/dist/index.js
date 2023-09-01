@@ -20,11 +20,12 @@ const serverInit = async () => {
         resolvers: schema_1.resolvers,
         plugins: [(0, drainHttpServer_1.ApolloServerPluginDrainHttpServer)({ httpServer })],
     });
+    // WARNING: THIS WILL NEED TO CHANGE FOR PRODUCTION
     const pool = new pg_1.Pool({
-        user: "your_db_user",
+        user: "postgres",
         host: "localhost",
-        database: "your_db_name",
-        password: "your_db_password",
+        database: "gamifyDB",
+        password: "newJ0bnow!",
         port: 5432,
     });
     await server.start();
