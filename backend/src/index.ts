@@ -7,12 +7,17 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import { typeDefs, resolvers } from "./schema";
 import { Pool } from "pg";
-import { setDefaultResultOrder } from "dns";
+import morgan from "morgan";
+import { log } from "util";
+
+require("dotenv").config();
 
 const serverInit = async () => {
   interface MyContext {
     pool?: Pool;
   }
+
+  const logLevel = process.argv[2] || "dev";
 
   const app = express();
 
@@ -22,14 +27,17 @@ const serverInit = async () => {
     typeDefs,
     resolvers,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    formatError: (error) => {
+      console.error(error);
+      return error;
+    },
   });
 
-  // WARNING: THIS WILL NEED TO CHANGE FOR PRODUCTION
   const pool = new Pool({
-    user: "postgres",
+    user: process.env.DB_USER,
     host: "localhost",
-    database: "gamifyDB",
-    password: "newJ0bnow!",
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
     port: 5432,
   });
 
@@ -39,7 +47,8 @@ const serverInit = async () => {
     "/",
     cors<cors.CorsRequest>(),
     bodyParser.json(),
-    expressMiddleware(server, { context: async () => ({ pool: pool }) })
+    expressMiddleware(server, { context: async () => ({ pool: pool }) }),
+    morgan(logLevel)
   );
 
   await new Promise<void>((resolve) =>

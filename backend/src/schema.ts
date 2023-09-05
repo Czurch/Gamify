@@ -35,6 +35,8 @@ const typeDefs = `#graphql
     password: String!
   }
 
+  scalar Token
+
   # The "Query" type is special: it lists all of the available queries that
   # clients can execute, along with the return type for each. In this
   # case, the "books" query returns an array of zero or more Books (defined above).
@@ -42,24 +44,13 @@ const typeDefs = `#graphql
     getUserByID(id: Int!): User
     getUserByEmail(email: String!): User
     getUserByName(username: String!): User
-    authenticateUser(input: authenticationInput!): User!
+    authenticateUser(input: authenticationInput!): Token!
   }
 
   type Mutation {
     createUser(input: CreateUserInput!): User!
   }
 `;
-
-const books = [
-  {
-    title: "The Awakening",
-    author: "Kate Chopin",
-  },
-  {
-    title: "City of Glass",
-    author: "Paul Auster",
-  },
-];
 
 // Resolvers define how to fetch the types defined in your schema.
 // This resolver retrieves books from the "books" array above.
@@ -117,7 +108,7 @@ const resolvers = {
       const client = await pool.connect();
       try {
         const result = await client.query(
-          'SELECT * FROM "user" WHERE username = $1 AND password = $2',
+          'SELECT * FROM "user" WHERE (username = $1 OR email = $1) AND password = $2',
           [input.emailOrUsername, input.password]
         );
         if (result.rows.length == 0)

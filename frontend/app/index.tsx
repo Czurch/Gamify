@@ -20,25 +20,14 @@ import TextCard from "../components/cards/TextCard";
 import nearbyQuestSlice from "../store/reducers/nearbyQuestReducer";
 import { Quest } from "../constants/interfaces";
 import TextButton from "../components/common/TextButton";
+import Authentication from "./authentication";
 
 const Home: React.FC = () => {
-  const userProfile: Profile = useSelector(
-    (state: { user: Profile }) => state.user
-  );
-  const nearbyQuests: Quest[] = useSelector(
-    (state: { nearbyQuests: QuestList }) => state.nearbyQuests.quests
-  );
-  const dispatch = useDispatch();
-  const { replaceList } = nearbyQuestSlice.actions;
-  const fetchNearbyQuests = () => {
-    dispatch(replaceList(demoQuests));
-  };
+  const userAuth = useSelector((state: { auth }) => state.auth);
 
   useEffect(() => {
-    fetchNearbyQuests();
-  }, []);
-
-  const router = useRouter();
+    console.log(`useEffect in index: ${userAuth}`);
+  }, [userAuth]);
 
   return (
     <SafeAreaView
@@ -49,71 +38,7 @@ const Home: React.FC = () => {
           headerShown: false,
         }}
       />
-      <View style={styles.content}>
-        <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
-          <Text style={styles.welcome}>Welcome, </Text>
-          <Text style={styles.name}>{`${userProfile.firstname}.`}</Text>
-        </View>
-
-        <Text style={styles.tagline}>Your journey Awaits.</Text>
-        <Text style={styles.level}>{`Level ${userProfile.level} `}</Text>
-        <Bar
-          progress={userProfile.experience / 500}
-          width={null}
-          borderRadius={0}
-          color="rgba(250, 220, 0, 1)"
-        />
-        <Text style={styles.experience}>{`${userProfile.experience}/500`}</Text>
-        <ScrollView>
-          <Text style={styles.header}>Daily Quest</Text>
-          <QuestCard
-            title="I Want to Ride my Bike"
-            description="Take a bike ride! Bike for 1 km today."
-            experience={100}
-          />
-          <DividerLine />
-          <Text style={styles.header}>Your Goals</Text>
-          <View style={{ flex: 1 }}>
-            {userProfile.goals.length === 0 ? (
-              <TextCard innerText="You dont have any goals set." />
-            ) : (
-              userProfile.goals.map((goal, ix) => {
-                return (
-                  <TextCard
-                    innerText={`${goal.task} ${goal.value} ${goal.time} every ${goal.interval}`}
-                    key={ix}
-                  />
-                );
-              })
-            )}
-            <View>
-              <TextButton
-                text="My Goals"
-                onPress={() => router.replace(`/goals`)}
-              />
-            </View>
-          </View>
-          <DividerLine />
-          <Text style={styles.header}>Active Quests</Text>
-          <TextCard innerText="You don't have any active quests right now." />
-          <DividerLine />
-          <Text style={styles.header}>Available Quests</Text>
-          <View style={styles.questlist}>
-            {nearbyQuests.map((quest, ix) => {
-              return (
-                <QuestCard
-                  key={ix}
-                  title={quest.title}
-                  experience={quest.reward}
-                  description={quest.description}
-                />
-              );
-            })}
-          </View>
-          <DividerLine />
-        </ScrollView>
-      </View>
-      <NavBar />
+      <View>{!userAuth.token ? <Authentication /> : <Home />}</View>
     </SafeAreaView>
   );
 };

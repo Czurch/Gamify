@@ -6,6 +6,7 @@
     },
     "name": "Gamify",
     "slug": "Gamify",
+    "version": "0.2.1",
     "plugins": [
       [
         "expo-location",
@@ -13,6 +14,11 @@
           "locationAlwaysAndWhenInUsePermission": "Allow Gamify to use your location."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": "http://127.0.0.1:4000/graphql"
+      }
+    }
   }
 }

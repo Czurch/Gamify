@@ -6,7 +6,7 @@
   "type": "commonjs",
   "scripts": {
     "compile": "tsc",
-    "start": "npm run compile && node ./dist/index.js",
+    "start": "npm run compile && node ./dist/index.js all",
     "dev": "nodemon"
   },
   "keywords": [],
@@ -15,9 +15,12 @@
   "dependencies": {
     "@apollo/server": "^4.9.2",
     "body-parser": "^1.20.2",
+    "bunyan": "^1.8.15",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "graphql": "^16.8.0",
     "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
     "pg": "^8.11.3"
   },
   "devDependencies": {
