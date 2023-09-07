@@ -17,7 +17,7 @@ const typeDefs = `#graphql
     author: String
   }
 
-  # Core information about individual Users.
+  # Vital information about individual Users.
   type User {
     # The serialized ID associated with an individual user
     id: ID!
@@ -27,6 +27,22 @@ const typeDefs = `#graphql
     email: String!
     # User specified password to log in
     password: String!
+  }
+
+  # Basic information to be used in profile displays
+  type Profile {
+    # The serialized ID associated with an individual profile
+    profile_id: ID!
+    # The user id associated with this profile
+    user_id: ID!
+    # The user's first name
+    firstname: String!
+    # The user's last name
+    lastname: String!
+    # The user's total sum of experience
+    experience: Int!
+    # The user's account level
+    account_level: Int!
   }
 
   input authenticationInput {
@@ -40,6 +56,12 @@ const typeDefs = `#graphql
     password: String!
   }
 
+  input CreateProfileInput {
+    user_id: Int!
+    firstname: String!
+    lastname: String!
+  }
+
   scalar Token
 
   # The "Query" type is special: it lists all of the available queries that
@@ -50,10 +72,12 @@ const typeDefs = `#graphql
     getUserByEmail(email: String!): User
     getUserByName(username: String!): User
     authenticateUser(input: authenticationInput!): Token!
+    getProfilebyID(id: Int!): Profile
   }
 
   type Mutation {
     createUser(input: CreateUserInput!): User!
+    createProfile(input: CreateProfileInput!): Profile!
   }
 `;
 exports.typeDefs = typeDefs;
@@ -116,6 +140,16 @@ const resolvers = {
                 client.release();
             }
         },
+        getProfilebyID: async (_, { user_id }, { pool }) => {
+            const client = await pool.connect();
+            try {
+                const result = await client.query("SELECT * Profile WHERE (user_id = $1)", [user_id]);
+                return result.rows[0];
+            }
+            finally {
+                client.release();
+            }
+        },
     },
     Mutation: {
         createUser: async (_, { input }, { pool }) => {
@@ -132,6 +166,16 @@ const resolvers = {
                     throw new Error("Authentication Error: Username already exists");
                 }
                 const result = await client.query('INSERT INTO "user" (username, email, password) VALUES ($1, $2, $3) RETURNING *;', [input.username, input.email, input.password]);
+                return result.rows[0];
+            }
+            finally {
+                client.release();
+            }
+        },
+        createProfile: async (_, { input }, { pool }) => {
+            const client = await pool.connect();
+            try {
+                const result = await client.query("INSERT INTO Profile (user_id, firstname, lastname, experience, account_level) VALUES ($1, $2, $3, 0, 1) RETURNING *;", [input.user_id, input.firstname, input.lastname]);
                 return result.rows[0];
             }
             finally {

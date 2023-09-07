@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Profile, QuestList } from "../constants/interfaces";
 import { Bar } from "react-native-progress";
@@ -20,14 +20,15 @@ import TextCard from "../components/cards/TextCard";
 import nearbyQuestSlice from "../store/reducers/nearbyQuestReducer";
 import { Quest } from "../constants/interfaces";
 import TextButton from "../components/common/TextButton";
-import Authentication from "./authentication";
+import Login from "./login";
+import Home from "./home";
 
-const Home: React.FC = () => {
+const Index: React.FC = () => {
   const userAuth = useSelector((state: { auth }) => state.auth);
-
+  const [hasToken, setHasToken] = useState(false);
   useEffect(() => {
-    console.log(`useEffect in index: ${userAuth}`);
-  }, [userAuth]);
+    console.log(`useEffect in index: ${userAuth.token}`);
+  }, [hasToken]);
 
   return (
     <SafeAreaView
@@ -38,12 +39,12 @@ const Home: React.FC = () => {
           headerShown: false,
         }}
       />
-      <View>{!userAuth.token ? <Authentication /> : <Home />}</View>
+      {!userAuth.token ? <Login /> : <Home />}
     </SafeAreaView>
   );
 };
 
-export default Home;
+export default Index;
 
 const styles = StyleSheet.create({
   content: {
