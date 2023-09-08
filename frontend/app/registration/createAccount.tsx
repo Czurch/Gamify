@@ -1,9 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import SubmitButton from "../../components/common/SubmitButton";
 import { REGISTER_USER } from "../../graphQL/mutations";
+import { LOGIN_QUERY } from "../../graphQL/queries";
 import client from "../../client";
+import authSlice from "../../store/reducers/authReducer";
+import { useDispatch } from "react-redux";
+import { User } from "../../constants/interfaces";
+
+interface CreateUserResult {
+  createUser: User;
+}
+
+interface LoginResult {
+  authenticateUser: string;
+}
 
 const CreateAccount: React.FC = () => {
   const router = useRouter();
@@ -12,7 +24,32 @@ const CreateAccount: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [verifyPassword, setVerifyPassword] = useState("");
-  const [userData, setUserData] = useState({ id: "", username: "" });
+  const [userData, setUserData] = useState({ id: "", username: "", email: "" });
+  const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
+  const { setToken } = authSlice.actions;
+
+  useEffect(() => {
+    if (!userData.id) return;
+    handleLogin();
+  }, [userData]);
+
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      const result: LoginResult = await client.request(LOGIN_QUERY, {
+        input: { emailOrUsername: email, password: password },
+      });
+      console.log("The log in worked!");
+      const token = result.authenticateUser;
+      dispatch(setToken(token));
+      console.log("Token Dispatched");
+      router.replace("/");
+    } catch (e) {
+      console.error(e.message);
+    }
+  };
 
   const handleRegister = async () => {
     //maybe disable the register button instead
@@ -25,7 +62,7 @@ const CreateAccount: React.FC = () => {
     //check if username or email already exists in db
 
     try {
-      const result = await client.request(REGISTER_USER, {
+      const result: CreateUserResult = await client.request(REGISTER_USER, {
         input: { email: email, username: username, password: password },
       });
       console.log(result);
@@ -56,7 +93,6 @@ const CreateAccount: React.FC = () => {
         <TextInput
           style={styles.input}
           placeholder="Username"
-          secureTextEntry={true}
           onChangeText={(text) => setUsername(text)}
         />
         <TextInput
@@ -85,6 +121,7 @@ const CreateAccount: React.FC = () => {
             router.back();
           }}
         />
+        {loading && <Text>Loading...</Text>}
       </View>
     </SafeAreaView>
   );

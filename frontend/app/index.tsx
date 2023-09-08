@@ -25,10 +25,6 @@ import Home from "./home";
 
 const Index: React.FC = () => {
   const userAuth = useSelector((state: { auth }) => state.auth);
-  const [hasToken, setHasToken] = useState(false);
-  useEffect(() => {
-    console.log(`useEffect in index: ${userAuth.token}`);
-  }, [hasToken]);
 
   return (
     <SafeAreaView

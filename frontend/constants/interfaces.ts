@@ -17,6 +17,12 @@ interface LocationData {
   longitudeDelta: number;
 }
 
+interface User {
+  id: number;
+  email: string;
+  username: string;
+}
+
 interface Profile {
   firstname: string;
   lastname: string;
@@ -48,4 +54,13 @@ interface Skill {
   prereq?: Array<string>;
 }
 
-export { Coordinate, Goal, LocationData, Profile, Quest, QuestList, Skill };
+export {
+  Coordinate,
+  Goal,
+  LocationData,
+  Profile,
+  Quest,
+  QuestList,
+  Skill,
+  User,
+};
