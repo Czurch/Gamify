@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import express from "express";
 import { Pool } from "pg";
 import { GraphQLError } from "graphql";
+import { UserInterface } from "./interfaces";
 
 const context = async ({ req, res }) => {
   const pool = new Pool({
@@ -24,7 +25,7 @@ const context = async ({ req, res }) => {
   const token = req.headers.authorization || "";
 
   //try to retrieve a user with the token
-  const user = await getUser(token);
+  const user: UserInterface = await getUser(token);
 
   if (!user) {
     throw new GraphQLError("User is not authenticated", {

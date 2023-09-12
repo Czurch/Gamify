@@ -5,11 +5,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resolvers = exports.typeDefs = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const higherOrderResolver = async (client, callback, logResult) => {
+const simpleResolver = async (pool, query, args, logResult) => {
+    console.log(pool);
+    console.log(query);
+    console.log(args);
+    const client = await pool.connect();
     try {
-        const result = await callback;
+        const result = await client.query(query, args);
         if (logResult)
-            console.log(result);
+            console.log(result.rows);
         return result.rows[0];
     }
     finally {
@@ -98,35 +102,13 @@ const resolvers = {
         getUserByID: async (parent, args, contextValue) => {
             if (!contextValue.user)
                 return;
-            const client = await contextValue.pool.connect();
-            try {
-                const result = await client.query('SELECT * FROM "user" WHERE id = $1;', [contextValue.user.userId]);
-                console.log(result.rows);
-                return result.rows[0];
-            }
-            finally {
-                client.release();
-            }
+            return simpleResolver(contextValue.pool, 'SELECT * FROM "user" WHERE id = $1;', [contextValue.user.userId]);
         },
-        getUserByEmail: async (_, { email }, { pool }) => {
-            const client = await pool.connect();
-            try {
-                const result = await client.query('SELECT * FROM "user" WHERE email = $1;', [email]);
-                return result.rows[0];
-            }
-            finally {
-                client.release();
-            }
+        getUserByEmail: async (_, { email }, contextValue) => {
+            return simpleResolver(contextValue.pool, 'SELECT * FROM "user" WHERE email = $1;', [email]);
         },
-        getUserByName: async (_, { username }, { pool }) => {
-            const client = await pool.connect();
-            try {
-                const result = await client.query('SELECT * FROM "user" WHERE username = $1;', [username]);
-                return result.rows[0];
-            }
-            finally {
-                client.release();
-            }
+        getUserByName: async (_, { username }, contextValue) => {
+            return simpleResolver(contextValue.pool, 'SELECT * FROM "user" WHERE username = $1;', [username]);
         },
         authenticateUser: async (_, { input }, { pool }) => {
             const client = await pool.connect();
@@ -146,11 +128,8 @@ const resolvers = {
             }
         },
         getProfilebyID: async (_, __, contextValue) => {
-            const client = await contextValue.pool.connect();
             console.log(contextValue.user);
-            return higherOrderResolver(client, client.query("SELECT * FROM Profile WHERE (user_id = $1);", [
-                contextValue.user.userId,
-            ]));
+            return simpleResolver(contextValue.pool, "SELECT * FROM Profile WHERE (user_id = $1);", [contextValue.user.userId]);
         },
     },
     Mutation: {
