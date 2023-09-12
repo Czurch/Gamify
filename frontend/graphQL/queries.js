@@ -7,7 +7,7 @@ export const LOGIN_QUERY = gql`
 `;
 
 export const GET_PROFILE = gql`
-  query {
+  query GetUserAndProfile {
     getProfilebyID {
       firstname
       lastname

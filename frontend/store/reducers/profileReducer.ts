@@ -8,7 +8,7 @@ const initialState: Profile = {
   goals: [],
   quests: [],
   experience: 300,
-  level: 1,
+  account_level: 1,
   //skillProgress: new Map(),
 };
 
@@ -20,7 +20,7 @@ export const profileSlice = createSlice({
       state.firstname = action.payload.firstname;
       state.lastname = action.payload.lastname;
       state.experience = action.payload.experience;
-      state.level = action.payload.level;
+      state.account_level = action.payload.account_level;
     },
     setFirstname: (state, action) => {
       state.firstname = action.payload;
@@ -41,7 +41,7 @@ export const profileSlice = createSlice({
       state.experience += action.payload;
     },
     increaseLevel: (state) => {
-      state.level += 1;
+      state.account_level += 1;
     },
   },
 });

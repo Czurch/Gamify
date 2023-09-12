@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { userSlice } from "../store/reducers/userReducer";
 import { ScrollView, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { Stack } from "expo-router";
-import { demoProfile } from "../assets/data/demoprofile";
 import DividerLine from "../components/common/DividerLine";
 import NavBar from "../components/common/NavBar";
 import TextCard from "../components/cards/TextCard";
@@ -14,11 +12,12 @@ import { Pressable } from "react-native";
 import EnumField from "../components/common/EnumField";
 import SubmitButton from "../components/common/SubmitButton";
 import { Goal, Profile } from "../constants/interfaces";
+import profileSlice from "../store/reducers/profileReducer";
 
 const Goals: React.FC = () => {
   const goals = useSelector((state: { user: Profile }) => state.user.goals);
   const dispatch = useDispatch();
-  const { addGoal } = userSlice.actions;
+  const { addGoal } = profileSlice.actions;
 
   const activities = [
     { label: "Bike", value: "bike" },

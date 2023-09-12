@@ -29,7 +29,7 @@ interface Profile {
   goals: Array<Goal>;
   quests: Array<Quest>;
   experience: number;
-  level: number;
+  account_level: number;
   //skillProgress: Map<string, boolean>; // false = accepted / true = completed
 }
 

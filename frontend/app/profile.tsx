@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { userSlice } from "../store/reducers/userReducer";
-import { Profile } from "../constants/interfaces";
+import { Profile, User } from "../constants/interfaces";
 import { Bar } from "react-native-progress";
 import {
   Image,
@@ -17,15 +17,18 @@ import demoQuests from "../assets/data/demoQuests";
 import DividerLine from "../components/common/DividerLine";
 import NavBar from "../components/common/NavBar";
 import QuestCard from "../components/cards/QuestCard";
+import profileSlice from "../store/reducers/profileReducer";
 
 const ProfilePage: React.FC = () => {
   const router = useRouter();
   const userProfile: Profile = useSelector(
-    (state: { user: Profile }) => state.user
+    (state: { profile: Profile }) => state.profile
   );
-  const { firstname, lastname, goals, quests, experience, level } = userProfile;
+  const user: User = useSelector((state: { user: User }) => state.user);
+  const { firstname, lastname, goals, quests, experience, account_level } =
+    userProfile;
   const dispatch = useDispatch();
-  const { addGoal } = userSlice.actions;
+  const { addGoal } = profileSlice.actions;
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "#F7F6FE", paddingTop: 32 }}
@@ -47,7 +50,8 @@ const ProfilePage: React.FC = () => {
         </View>
 
         <Text style={styles.tagline}>Novice Biker</Text>
-        <Text style={styles.level}>{`Level ${level} `}</Text>
+        <Text style={styles.tagline}>@{user.username}</Text>
+        <Text style={styles.level}>{`Level ${account_level} `}</Text>
         <Bar
           progress={experience / 500}
           width={null}

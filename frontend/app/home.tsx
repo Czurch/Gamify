@@ -2,14 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Profile, QuestList } from "../constants/interfaces";
 import { Bar } from "react-native-progress";
-import {
-  ScrollView,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-} from "react-native";
+import { ScrollView, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { Stack } from "expo-router";
 import demoQuests from "../assets/data/demoQuests";
 import DividerLine from "../components/common/DividerLine";
@@ -56,7 +49,9 @@ const Home: React.FC = () => {
         </View>
 
         <Text style={styles.tagline}>Your journey Awaits.</Text>
-        <Text style={styles.level}>{`Level ${userProfile.level} `}</Text>
+        <Text
+          style={styles.level}
+        >{`Level ${userProfile.account_level} `}</Text>
         <Bar
           progress={userProfile.experience / 500}
           width={null}

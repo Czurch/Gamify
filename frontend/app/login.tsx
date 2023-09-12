@@ -2,21 +2,28 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Stack } from "expo-router";
-import { LOGIN_QUERY } from "../graphQL/queries";
+import { GET_PROFILE, LOGIN_QUERY } from "../graphQL/queries";
 import authSlice from "../store/reducers/authReducer";
 import * as Crypto from "expo-crypto";
 import client from "../client";
 import LoginForm from "../components/forms/login";
+import profileSlice from "../store/reducers/profileReducer";
+import userSlice from "../store/reducers/userReducer";
 
 const Login: React.FC = () => {
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
   const [data, setData] = useState(null);
+  const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
   const userAuth = useSelector((state: { auth }) => state.auth);
+  const profile = useSelector((state: { profile }) => state.profile);
+  const user = useSelector((state: { user }) => state.user);
   const { setToken } = authSlice.actions;
+  const { setProfile } = profileSlice.actions;
+  const { setUser } = userSlice.actions;
 
   useEffect(() => {
     if (!data) {
@@ -24,37 +31,40 @@ const Login: React.FC = () => {
       return;
     }
     const token = data.authenticateUser;
-
-    // Use a separate async function to await decodeToken
-    const handleTokenDecoding = async () => {
+    const handleRequest = async (token) => {
       try {
-        const decoded = await decodeToken(token);
-        console.log(decoded);
-        return decoded;
+        const result = requestUserAndProfile(token);
       } catch (e) {
         console.error(e.message);
       }
     };
-
-    handleTokenDecoding();
-
-    try {
-      dispatch(setToken(token));
-    } catch (error) {
-      console.error("Error while dispatching setToken:", error);
-    }
+    handleRequest(token);
   }, [data]);
 
-  const decodeToken = async (token) => {
+  useEffect(() => {
+    if (!profileData) {
+      setLoading(false);
+      return;
+    }
     try {
-      const decoded = await Crypto.digestStringAsync(
-        Crypto.CryptoDigestAlgorithm.SHA256,
-        token
+      dispatch(setProfile(profileData.getProfilebyID));
+      dispatch(setUser(profileData.getUserByID));
+      dispatch(setToken(data.authenticateUser));
+    } catch (error) {
+      console.error("Error while dispatching on Log in:", error);
+    }
+  }, [profileData]);
+
+  const requestUserAndProfile = async (token) => {
+    try {
+      const result = await client.request(
+        GET_PROFILE,
+        {},
+        { Authorization: `${token}` }
       );
-      return decoded;
-    } catch (e) {
-      console.error(e.message);
-      throw e;
+      setProfileData(result);
+    } catch (error) {
+      console.error(error.message);
     }
   };
 
@@ -64,7 +74,6 @@ const Login: React.FC = () => {
       const result = await client.request(LOGIN_QUERY, {
         input: { emailOrUsername: emailOrUsername, password: password },
       });
-      console.log(result);
       setData(result);
     } catch (e) {
       console.error(e.message);
