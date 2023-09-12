@@ -29,6 +29,7 @@ const Login: React.FC = () => {
     const handleTokenDecoding = async () => {
       try {
         const decoded = await decodeToken(token);
+        console.log(decoded);
         return decoded;
       } catch (e) {
         console.error(e.message);

@@ -6,8 +6,10 @@ import { REGISTER_USER } from "../../graphQL/mutations";
 import { LOGIN_QUERY } from "../../graphQL/queries";
 import client from "../../client";
 import authSlice from "../../store/reducers/authReducer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { User } from "../../constants/interfaces";
+import userSlice from "../../store/reducers/userReducer";
+import profileSlice from "../../store/reducers/profileReducer";
 
 interface CreateUserResult {
   createUser: User;
@@ -29,6 +31,10 @@ const CreateAccount: React.FC = () => {
 
   const dispatch = useDispatch();
   const { setToken } = authSlice.actions;
+  const { setUser } = userSlice.actions;
+  const { setProfile } = profileSlice.actions;
+
+  const storedToken = useSelector((state) => state.auth.token);
 
   useEffect(() => {
     if (!userData.id) return;
@@ -38,13 +44,18 @@ const CreateAccount: React.FC = () => {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      const result: LoginResult = await client.request(LOGIN_QUERY, {
-        input: { emailOrUsername: email, password: password },
-      });
+      const result: LoginResult = await client.request(
+        LOGIN_QUERY,
+        {
+          input: { emailOrUsername: email, password: password },
+        },
+        { Authorization: storedToken ? `Bearer ${storedToken}` : "" }
+      );
       console.log("The log in worked!");
       const token = result.authenticateUser;
       dispatch(setToken(token));
       console.log("Token Dispatched");
+      dispatch(setProfile(userData));
       router.replace("/");
     } catch (e) {
       console.error(e.message);
@@ -67,7 +78,6 @@ const CreateAccount: React.FC = () => {
       });
       console.log(result);
       setUserData(result.createUser);
-      //dispatch(setUser(result))
     } catch (e) {
       setErrorText(e.message.toString());
       console.error(e.message);

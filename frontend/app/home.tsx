@@ -23,7 +23,7 @@ import TextButton from "../components/common/TextButton";
 
 const Home: React.FC = () => {
   const userProfile: Profile = useSelector(
-    (state: { user: Profile }) => state.user
+    (state: { profile: Profile }) => state.profile
   );
   const nearbyQuests: Quest[] = useSelector(
     (state: { nearbyQuests: QuestList }) => state.nearbyQuests.quests
