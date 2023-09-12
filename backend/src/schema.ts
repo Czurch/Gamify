@@ -1,4 +1,24 @@
 import jwt from "jsonwebtoken";
+import { Pool, PoolClient, QueryResult } from "pg";
+
+const simpleResolver = async (
+  pool: Pool,
+  query: string,
+  args: any[],
+  logResult?: boolean
+) => {
+  console.log(pool);
+  console.log(query);
+  console.log(args);
+  const client = await pool.connect();
+  try {
+    const result: QueryResult = await client.query(query, args);
+    if (logResult) console.log(result.rows);
+    return result.rows[0];
+  } finally {
+    client.release();
+  }
+};
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
@@ -21,7 +41,7 @@ const typeDefs = `#graphql
     # Email address of the user
     email: String!
     # User specified password to log in
-    password: String!
+    password: String
   }
 
   # Basic information to be used in profile displays
@@ -52,7 +72,6 @@ const typeDefs = `#graphql
   }
 
   input CreateProfileInput {
-    user_id: Int!
     firstname: String!
     lastname: String!
   }
@@ -63,11 +82,11 @@ const typeDefs = `#graphql
   # clients can execute, along with the return type for each. In this
   # case, the "books" query returns an array of zero or more Books (defined above).
   type Query {
-    getUserByID(id: Int!): User
+    getUserByID: User
     getUserByEmail(email: String!): User
     getUserByName(username: String!): User
     authenticateUser(input: authenticationInput!): Token!
-    getProfilebyID(id: Int!): Profile
+    getProfilebyID: Profile
   }
 
   type Mutation {
@@ -80,53 +99,27 @@ const typeDefs = `#graphql
 // This resolver retrieves books from the "books" array above.
 const resolvers = {
   Query: {
-    getUserByID: async (_, { id }, { pool, req }) => {
-      const authorizationHeader = req.headers.authorization;
-      if (!authorizationHeader)
-        throw new Error("Authentication Error: Token is missing");
-
-      const token = authorizationHeader.replace("Bearer", "");
-      try {
-        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-
-        const client = await pool.connect();
-
-        try {
-          const result = await client.query(
-            'SELECT * FROM "user" WHERE id = $1;',
-            [id]
-          );
-          return result.rows[0];
-        } finally {
-          client.release();
-        }
-      } catch (error) {
-        throw new Error("Authentication Error: Invalid or expired token");
-      }
+    getUserByID: async (parent, args, contextValue) => {
+      if (!contextValue.user) return;
+      return simpleResolver(
+        contextValue.pool,
+        'SELECT * FROM "user" WHERE id = $1;',
+        [contextValue.user.userId]
+      );
     },
-    getUserByEmail: async (_, { email }, { pool }) => {
-      const client = await pool.connect();
-      try {
-        const result = await client.query(
-          'SELECT * FROM "user" WHERE email = $1;',
-          [email]
-        );
-        return result.rows[0];
-      } finally {
-        client.release();
-      }
+    getUserByEmail: async (_, { email }, contextValue) => {
+      return simpleResolver(
+        contextValue.pool,
+        'SELECT * FROM "user" WHERE email = $1;',
+        [email]
+      );
     },
-    getUserByName: async (_, { username }, { pool }) => {
-      const client = await pool.connect();
-      try {
-        const result = await client.query(
-          'SELECT * FROM "user" WHERE username = $1;',
-          [username]
-        );
-        return result.rows[0];
-      } finally {
-        client.release();
-      }
+    getUserByName: async (_, { username }, contextValue) => {
+      return simpleResolver(
+        contextValue.pool,
+        'SELECT * FROM "user" WHERE username = $1;',
+        [username]
+      );
     },
     authenticateUser: async (_, { input }, { pool }) => {
       const client = await pool.connect();
@@ -139,27 +132,21 @@ const resolvers = {
           throw new Error("Authentication Error: Invalid username/password");
         // instead of returning user data, we should return a token
         const user = result.rows[0];
-        const token = jwt.sign(
-          { userId: user.id, username: user.usename },
-          process.env.JWT_SECRET,
-          { expiresIn: "6h" }
-        );
+        const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+          expiresIn: "6h",
+        });
         return token;
       } finally {
         client.release();
       }
     },
-    getProfilebyID: async (_, { user_id }, { pool }) => {
-      const client = await pool.connect();
-      try {
-        const result = await client.query(
-          "SELECT * Profile WHERE (user_id = $1)",
-          [user_id]
-        );
-        return result.rows[0];
-      } finally {
-        client.release();
-      }
+    getProfilebyID: async (_, __, contextValue) => {
+      console.log(contextValue.user);
+      return simpleResolver(
+        contextValue.pool,
+        "SELECT * FROM Profile WHERE (user_id = $1);",
+        [contextValue.user.userId]
+      );
     },
   },
   Mutation: {
@@ -192,12 +179,12 @@ const resolvers = {
         client.release();
       }
     },
-    createProfile: async (_, { input }, { pool }) => {
-      const client = await pool.connect();
+    createProfile: async (_, { input }, contextValue) => {
+      const client = await contextValue.pool.connect();
       try {
         const result = await client.query(
           "INSERT INTO Profile (user_id, firstname, lastname, experience, account_level) VALUES ($1, $2, $3, 0, 1) RETURNING *;",
-          [input.user_id, input.firstname, input.lastname]
+          [contextValue.user.userId, input.firstname, input.lastname]
         );
         return result.rows[0];
       } finally {

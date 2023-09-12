@@ -11,8 +11,8 @@ const http_1 = __importDefault(require("http"));
 const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const schema_1 = require("./schema");
-const pg_1 = require("pg");
 const morgan_1 = __importDefault(require("morgan"));
+const context_1 = __importDefault(require("./context"));
 require("dotenv").config();
 const serverInit = async () => {
     const logLevel = process.argv[2] || "dev";
@@ -27,15 +27,8 @@ const serverInit = async () => {
             return error;
         },
     });
-    const pool = new pg_1.Pool({
-        user: process.env.DB_USER,
-        host: "localhost",
-        database: process.env.DB_NAME,
-        password: process.env.DB_PASSWORD,
-        port: 5432,
-    });
     await server.start();
-    app.use("/", (0, cors_1.default)(), body_parser_1.default.json(), (0, express4_1.expressMiddleware)(server, { context: async () => ({ pool: pool }) }), (0, morgan_1.default)(logLevel));
+    app.use("/", (0, cors_1.default)(), body_parser_1.default.json(), (0, express4_1.expressMiddleware)(server, { context: context_1.default }), (0, morgan_1.default)(logLevel));
     await new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve));
     console.log(`🚀  Server ready at http://localhost:4000/`);
 };

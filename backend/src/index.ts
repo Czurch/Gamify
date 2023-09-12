@@ -8,13 +8,15 @@ import bodyParser from "body-parser";
 import { typeDefs, resolvers } from "./schema";
 import { Pool } from "pg";
 import morgan from "morgan";
-import { log } from "util";
+import context from "./context";
+import { UserInterface } from "./interfaces";
 
 require("dotenv").config();
 
 const serverInit = async () => {
   interface MyContext {
     pool?: Pool;
+    user?: UserInterface;
   }
 
   const logLevel = process.argv[2] || "dev";
@@ -33,21 +35,13 @@ const serverInit = async () => {
     },
   });
 
-  const pool = new Pool({
-    user: process.env.DB_USER,
-    host: "localhost",
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    port: 5432,
-  });
-
   await server.start();
 
   app.use(
     "/",
     cors<cors.CorsRequest>(),
     bodyParser.json(),
-    expressMiddleware(server, { context: async () => ({ pool: pool }) }),
+    expressMiddleware(server, { context: context }),
     morgan(logLevel)
   );
 
