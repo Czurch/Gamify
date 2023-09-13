@@ -3,7 +3,7 @@ import { SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import SubmitButton from "../../components/common/SubmitButton";
 import { REGISTER_USER } from "../../graphQL/mutations";
-import { LOGIN_QUERY } from "../../graphQL/queries";
+import { GET_PROFILE, LOGIN_QUERY } from "../../graphQL/queries";
 import client from "../../client";
 import authSlice from "../../store/reducers/authReducer";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,12 +21,14 @@ interface LoginResult {
 
 const CreateAccount: React.FC = () => {
   const router = useRouter();
+  const [auth, setAuth] = useState(null);
   const [errorText, setErrorText] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [verifyPassword, setVerifyPassword] = useState("");
   const [userData, setUserData] = useState({ id: "", username: "", email: "" });
+  const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
@@ -39,22 +41,54 @@ const CreateAccount: React.FC = () => {
   useEffect(() => {
     if (!userData.id) return;
     handleLogin();
+    const handleRequest = async (token) => {
+      try {
+        const result = requestUserAndProfile(token);
+      } catch (e) {
+        console.error(e.message);
+      }
+    };
+    handleRequest(auth);
   }, [userData]);
+
+  useEffect(() => {
+    if (!profileData) {
+      setLoading(false);
+      return;
+    }
+    try {
+      dispatch(setProfile(profileData.getProfilebyID));
+      dispatch(setUser(profileData.getUserByID));
+      dispatch(setToken(storedToken));
+    } catch (error) {
+      console.error("Error while dispatching on Log in:", error);
+    }
+  }, [profileData]);
+
+  const requestUserAndProfile = async (token) => {
+    console.log(`request token: ${token}`);
+    try {
+      const result = await client.request(
+        GET_PROFILE,
+        {},
+        { Authorization: `${token}` }
+      );
+      setProfileData(result);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
 
   const handleLogin = async () => {
     setLoading(true);
     try {
-      const result: LoginResult = await client.request(
-        LOGIN_QUERY,
-        {
-          input: { emailOrUsername: email, password: password },
-        },
-        { Authorization: storedToken ? `Bearer ${storedToken}` : "" }
-      );
+      const result: LoginResult = await client.request(LOGIN_QUERY, {
+        input: { emailOrUsername: email, password: password },
+      });
       console.log("The log in worked!");
-      const token = result.authenticateUser;
-      dispatch(setToken(token));
-      console.log("Token Dispatched");
+      setAuth(result.authenticateUser);
+      console.log(`result token: ${result.authenticateUser}`);
+      dispatch(setToken(auth));
       dispatch(setProfile(userData));
       router.replace("/");
     } catch (e) {
