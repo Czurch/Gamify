@@ -3,7 +3,12 @@ import { SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import SubmitButton from "../../components/common/SubmitButton";
 import { REGISTER_USER, RegisterUserMutation } from "../../graphQL/mutations";
-import { GET_PROFILE, LOGIN_QUERY, LoginQuery } from "../../graphQL/queries";
+import {
+  GET_PROFILE,
+  GetProfileQuery,
+  LOGIN_QUERY,
+  LoginQuery,
+} from "../../graphQL/queries";
 import client from "../../graphQL/client";
 import authSlice from "../../store/reducers/authReducer";
 import { useDispatch, useSelector } from "react-redux";
@@ -40,15 +45,23 @@ const CreateAccount: React.FC = () => {
 
   useEffect(() => {
     if (!userData.id) return;
-    handleLogin();
-    const handleRequest = async (token) => {
+
+    const handleRequest = async () => {
+      let token;
       try {
-        const result = requestUserAndProfile(token);
+        token = await handleLogin();
+      } catch (e) {
+        console.error(e.message);
+        return;
+      }
+      try {
+        const result = await GetProfileQuery(token);
+        setProfileData(result);
       } catch (e) {
         console.error(e.message);
       }
     };
-    handleRequest(auth);
+    handleRequest();
   }, [userData]);
 
   useEffect(() => {
@@ -65,23 +78,9 @@ const CreateAccount: React.FC = () => {
     }
   }, [profileData]);
 
-  const requestUserAndProfile = async (token) => {
-    console.log(`request token: ${token}`);
-    try {
-      const result = await client.request(
-        GET_PROFILE,
-        {},
-        { Authorization: `${token}` }
-      );
-      setProfileData(result);
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
-
   const handleLogin = async () => {
     const result = await LoginQuery(email, password, setLoading);
-    setAuth(result);
+    return result;
   };
 
   const handleRegister = async () => {
