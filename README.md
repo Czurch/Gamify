@@ -8,7 +8,7 @@ necessary tables are:
 CREATE TABLE "user"(
 	id SERIAL PRIMARY KEY,
 	username VARCHAR(30),
-  email VARCHAR(255),
+  	email VARCHAR(255),
 	password TEXT,
 )
 ```
@@ -27,3 +27,15 @@ CREATE TABLE profile(
           REFERENCES "user"(id)
 )
 ```
+
+to run:
+
+-Navigate to backend and;
+1. `npm install`
+2. `npm run dev`
+
+-Navigate to frontend and;
+1. `npm install`
+2. `npm start`
+
+-Run Expo Go on Phone or Virtual Device
