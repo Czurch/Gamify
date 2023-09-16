@@ -22,7 +22,7 @@ CREATE TABLE profile(
     experience INT,
     account_level INT,
     user_id INT,
-      constraint fk_user
+      CONSTRAINT fk_user
         FOREIGN KEY(user_id)
           REFERENCES "user"(id)
 )
