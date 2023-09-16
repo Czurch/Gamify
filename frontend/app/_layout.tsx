@@ -3,7 +3,7 @@ import { Provider } from "react-redux";
 import store from "../store";
 import { Stack } from "expo-router";
 import { ApolloProvider } from "@apollo/client";
-import client from "../client";
+import client from "../graphQL/client";
 
 const Layout: React.FC = () => {
   return (

@@ -1,3 +1,11 @@
+interface MQStore {
+  auth: any;
+  user: any;
+  profile: any;
+  dailyQuest: any;
+  nearbyQuests: any;
+}
+
 interface Coordinate {
   latitude: number;
   longitude: number;
@@ -58,6 +66,7 @@ export {
   Coordinate,
   Goal,
   LocationData,
+  MQStore,
   Profile,
   Quest,
   QuestList,

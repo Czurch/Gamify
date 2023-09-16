@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import SubmitButton from "../../components/common/SubmitButton";
-import { REGISTER_USER } from "../../graphQL/mutations";
-import { GET_PROFILE, LOGIN_QUERY } from "../../graphQL/queries";
-import client from "../../client";
+import { REGISTER_USER, RegisterUserMutation } from "../../graphQL/mutations";
+import { GET_PROFILE, LOGIN_QUERY, LoginQuery } from "../../graphQL/queries";
+import client from "../../graphQL/client";
 import authSlice from "../../store/reducers/authReducer";
 import { useDispatch, useSelector } from "react-redux";
-import { User } from "../../constants/interfaces";
+import { MQStore, User } from "../../constants/interfaces";
 import userSlice from "../../store/reducers/userReducer";
 import profileSlice from "../../store/reducers/profileReducer";
 
@@ -36,7 +36,7 @@ const CreateAccount: React.FC = () => {
   const { setUser } = userSlice.actions;
   const { setProfile } = profileSlice.actions;
 
-  const storedToken = useSelector((state) => state.auth.token);
+  const storedToken = useSelector((state: MQStore) => state.auth.token);
 
   useEffect(() => {
     if (!userData.id) return;
@@ -80,42 +80,19 @@ const CreateAccount: React.FC = () => {
   };
 
   const handleLogin = async () => {
-    setLoading(true);
-    try {
-      const result: LoginResult = await client.request(LOGIN_QUERY, {
-        input: { emailOrUsername: email, password: password },
-      });
-      console.log("The log in worked!");
-      setAuth(result.authenticateUser);
-      console.log(`result token: ${result.authenticateUser}`);
-      dispatch(setToken(auth));
-      dispatch(setProfile(userData));
-      router.replace("/");
-    } catch (e) {
-      console.error(e.message);
-    }
+    const result = await LoginQuery(email, password, setLoading);
+    setAuth(result);
   };
 
   const handleRegister = async () => {
-    //maybe disable the register button instead
-    if (!email || !username || !password || !verifyPassword) return;
-    if (password !== verifyPassword) {
-      setErrorText("Passwords Don't match");
-      return;
-    }
-    setErrorText("");
-    //check if username or email already exists in db
-
-    try {
-      const result: CreateUserResult = await client.request(REGISTER_USER, {
-        input: { email: email, username: username, password: password },
-      });
-      console.log(result);
-      setUserData(result.createUser);
-    } catch (e) {
-      setErrorText(e.message.toString());
-      console.error(e.message);
-    }
+    const result = await RegisterUserMutation(
+      email,
+      username,
+      password,
+      verifyPassword,
+      setErrorText
+    );
+    setUserData(result);
   };
 
   return (

@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Stack } from "expo-router";
-import { GET_PROFILE, LOGIN_QUERY } from "../graphQL/queries";
+import { GET_PROFILE, GetProfileQuery, LoginQuery } from "../graphQL/queries";
 import authSlice from "../store/reducers/authReducer";
-import * as Crypto from "expo-crypto";
-import client from "../client";
+import client from "../graphQL/client";
 import LoginForm from "../components/forms/login";
 import profileSlice from "../store/reducers/profileReducer";
 import userSlice from "../store/reducers/userReducer";
@@ -56,28 +55,13 @@ const Login: React.FC = () => {
   }, [profileData]);
 
   const requestUserAndProfile = async (token) => {
-    try {
-      const result = await client.request(
-        GET_PROFILE,
-        {},
-        { Authorization: `${token}` }
-      );
-      setProfileData(result);
-    } catch (error) {
-      console.error(error.message);
-    }
+    const result = GetProfileQuery(token);
+    setProfileData(result);
   };
 
   const handleLogin = async () => {
-    setLoading(true);
-    try {
-      const result = await client.request(LOGIN_QUERY, {
-        input: { emailOrUsername: emailOrUsername, password: password },
-      });
-      setData(result);
-    } catch (e) {
-      console.error(e.message);
-    }
+    const result = LoginQuery(emailOrUsername, password, setLoading);
+    setData(result);
   };
 
   return (
