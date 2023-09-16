@@ -16,12 +16,12 @@ note: password field will change when we move away from plaintext
 
 ```SQL
 CREATE TABLE profile(
-    profile_id SERIAL PRIMARY KEY
-    firstname VARCHAR(255)
-    lastname VARCHAR(255)
-    experience INT
-    account_level INT
-    user_id INT
+    profile_id SERIAL PRIMARY KEY,
+    firstname VARCHAR(255),
+    lastname VARCHAR(255),
+    experience INT,
+    account_level INT,
+    user_id INT,
       constraint fk_user
         FOREIGN KEY(user_id)
           REFERENCES "user"(id)
