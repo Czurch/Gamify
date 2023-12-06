@@ -15,7 +15,9 @@ import { Goal, Profile } from "../constants/interfaces";
 import profileSlice from "../store/reducers/profileReducer";
 
 const Goals: React.FC = () => {
-  const goals = useSelector((state: { user: Profile }) => state.user.goals);
+  const goals = useSelector(
+    (state: { profile: Profile }) => state.profile.goals
+  );
   const dispatch = useDispatch();
   const { addGoal } = profileSlice.actions;
 

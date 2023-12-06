@@ -81,7 +81,7 @@ const Home: React.FC = () => {
                 );
               })
             )}
-            <View>
+            <View style={{ marginTop: 64 }}>
               <TextButton
                 text="My Goals"
                 onPress={() => router.replace(`/goals`)}
