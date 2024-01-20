@@ -50,16 +50,13 @@ const CreateAccount: React.FC = () => {
       let token;
       try {
         token = await handleLogin();
+        dispatch(setToken(token.authenticateUser));
       } catch (e) {
         console.error(e.message);
         return;
       }
-      try {
-        const result = await GetProfileQuery(token);
-        setProfileData(result);
-      } catch (e) {
-        console.error(e.message);
-      }
+      //Go to create profile screen
+      router.push("registration/createProfile");
     };
     handleRequest();
   }, [userData]);

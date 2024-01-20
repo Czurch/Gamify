@@ -1,4 +1,4 @@
-import { gql } from "apollo-server-express";
+import { gql } from "@apollo/client";
 import client from "./client";
 
 export const LOGIN_QUERY = gql`

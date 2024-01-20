@@ -32,7 +32,8 @@ const Login: React.FC = () => {
     const token = data.authenticateUser;
     const handleRequest = async (token) => {
       try {
-        const result = requestUserAndProfile(token);
+        const result = await requestUserAndProfile(token);
+        console.log(result);
       } catch (e) {
         console.error(e.message);
       }
@@ -55,13 +56,21 @@ const Login: React.FC = () => {
   }, [profileData]);
 
   const requestUserAndProfile = async (token) => {
-    const result = GetProfileQuery(token);
-    setProfileData(result);
+    try {
+      const result = await GetProfileQuery(token);
+      setProfileData(result);
+    } catch (error) {
+      console.error(error.message);
+    }
   };
 
   const handleLogin = async () => {
-    const result = LoginQuery(emailOrUsername, password, setLoading);
-    setData(result);
+    try {
+      const result = await LoginQuery(emailOrUsername, password, setLoading);
+      setData(result);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (

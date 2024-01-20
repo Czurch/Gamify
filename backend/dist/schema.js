@@ -129,7 +129,7 @@ const resolvers = {
         },
         getProfilebyID: async (_, __, contextValue) => {
             console.log(contextValue.user);
-            return simpleResolver(contextValue.pool, "SELECT * FROM Profile WHERE (user_id = $1);", [contextValue.user.userId]);
+            return simpleResolver(contextValue.pool, "SELECT * FROM profile WHERE (user_id = $1);", [contextValue.user.userId]);
         },
     },
     Mutation: {

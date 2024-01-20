@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { OAuth2Client } from "google-auth-library";
 import { Pool, PoolClient, QueryResult } from "pg";
 
 const simpleResolver = async (
@@ -144,7 +145,7 @@ const resolvers = {
       console.log(contextValue.user);
       return simpleResolver(
         contextValue.pool,
-        "SELECT * FROM Profile WHERE (user_id = $1);",
+        "SELECT * FROM profile WHERE (user_id = $1);",
         [contextValue.user.userId]
       );
     },
